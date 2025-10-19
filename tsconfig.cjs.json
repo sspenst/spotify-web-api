@@ -1,7 +1,15 @@
 {
     "extends": "./tsconfig.json",
+    "include": [
+        "./src/**/*.ts"
+    ],
+    "exclude": [
+        "./src/**/*.test.ts",
+        "./src/test/**/*.ts",
+    ],
     "compilerOptions": {
         "module": "CommonJS",
         "outDir": "dist/cjs",
-    }
+        "rootDir": "./src",
+    },
 }

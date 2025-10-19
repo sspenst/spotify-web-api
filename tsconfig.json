@@ -1,13 +1,7 @@
 {
   "include": [
-    "./src/**/*.ts"
-  ],
-  "exclude": [
-    "./src/**/*.test.ts",
-    "./example/**/*.ts",
-    "./vite.config.ts",
-    "./vitest.config.ts",
-    "./src/test/**/*.ts"
+    "**/*.ts",
+    "**/*.tsx",
   ],
   "compilerOptions": {
     "target": "ESNext",
@@ -25,7 +19,6 @@
     "moduleResolution": "Node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "rootDir": "./src",
     "sourceMap": true,
     "strict": true
   }
