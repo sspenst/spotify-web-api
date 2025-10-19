@@ -18,7 +18,7 @@ describe("Integration: Search Endpoints", () => {
 
         const allMentionedArtists = result.artists.items.map(artist => artist.name);
 
-        expect(fetchSpy.request(0).input).toBe(`https://api.spotify.com/v1/search?q=${q}&type=artist`);
+        expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/search?q=${q}&type=artist`);
         expect(allMentionedArtists).toContain("Katatonia");
     });
 

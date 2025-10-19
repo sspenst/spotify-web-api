@@ -16,7 +16,7 @@ describe("Integration: Episodes Endpoints", () => {
         const valid = validMarkets();
         const result = await sut.markets.getAvailableMarkets();
 
-        expect(fetchSpy.request(0).input).toBe(`https://api.spotify.com/v1/markets`);
+        expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/markets`);
         expect(result).toStrictEqual(valid);
     });
 });

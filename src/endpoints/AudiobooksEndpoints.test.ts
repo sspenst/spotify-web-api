@@ -17,7 +17,7 @@ describe("Integration: Audiobooks Endpoints", () => {
         const item = validAudioBook();
         const result = await sut.audiobooks.get(item.id);
 
-        expect(fetchSpy.request(0).input).toBe(`https://api.spotify.com/v1/audiobooks/${item.id}`);
+        expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/audiobooks/${item.id}`);
         expect(result.id).toBe(item.id);
     });
 
@@ -25,7 +25,7 @@ describe("Integration: Audiobooks Endpoints", () => {
         const item = validAudioBook();
         const result = await sut.audiobooks.get([item.id, item.id]);
 
-        expect(fetchSpy.request(0).input).toBe(`https://api.spotify.com/v1/audiobooks?ids=${item.id}%2C${item.id}`);
+        expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/audiobooks?ids=${item.id}%2C${item.id}`);
         expect(result.length).toBe(2);
         expect(result[0].id).toBe(item.id);
         expect(result[1].id).toBe(item.id);
@@ -37,7 +37,7 @@ describe("Integration: Audiobooks Endpoints", () => {
 
         const result = await sut.audiobooks.getAudiobookChapters(item.id);
 
-        expect(fetchSpy.request(0).input).toBe(`https://api.spotify.com/v1/audiobooks/${item.id}/chapters`);
+        expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/audiobooks/${item.id}/chapters`);
         expect(result.items.length).toBeGreaterThan(0);
     });
 });

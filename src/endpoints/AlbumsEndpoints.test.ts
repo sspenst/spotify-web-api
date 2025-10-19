@@ -17,7 +17,7 @@ describe("Integration: Albums Endpoints", () => {
         const item = validAlbumResult();
         const result = await sut.albums.get(item.id);
 
-        expect(fetchSpy.request(0).input).toBe(`https://api.spotify.com/v1/albums/${item.id}`);
+        expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/albums/${item.id}`);
         expect(result.name).toBe(item.name);
     });
 
@@ -25,7 +25,7 @@ describe("Integration: Albums Endpoints", () => {
         const item = validAlbumResult();
         const result = await sut.albums.get([item.id, item.id]);
 
-        expect(fetchSpy.request(0).input).toBe(`https://api.spotify.com/v1/albums?ids=${item.id}%2C${item.id}`);
+        expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/albums?ids=${item.id}%2C${item.id}`);
         expect(result.length).toBe(2);
         expect(result[0].id).toBe(item.id);
         expect(result[1].id).toBe(item.id);

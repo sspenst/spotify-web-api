@@ -10,7 +10,7 @@ import dotenv from "dotenv";
 import { AccessToken, SdkOptions } from "../types";
 dotenv.config();
 
-export function buildIntegrationTestSdkInstance(logResults: boolean = false): [SpotifyApi, FetchApiSpy] {
+export function buildIntegrationTestSdkInstance(): [SpotifyApi, FetchApiSpy] {
     // This should be replaced with a representative server-side auth flow
     // that returns a valid access token.
 
@@ -27,7 +27,7 @@ export function buildIntegrationTestSdkInstance(logResults: boolean = false): [S
 
     const authStrat = new ClientCredentialsStrategy(clientId, clientSecret);
 
-    const fetchSpy = new FetchApiSpy(logResults);
+    const fetchSpy = new FetchApiSpy();
     const sdkConfig = {
         fetch: (input: RequestInfo | URL, init?: RequestInit | undefined) => {
             return fetchSpy.fetch(input, init);
@@ -40,7 +40,7 @@ export function buildIntegrationTestSdkInstance(logResults: boolean = false): [S
     return [sdkInstance, fetchSpy];
 }
 
-export function buildIntegrationTestUserSdkInstance(logResults: boolean = false): [SpotifyApi, FetchApiSpy] {
+export function buildIntegrationTestUserSdkInstance(): [SpotifyApi, FetchApiSpy] {
     const accessToken = process.env.INTEGRATION_TESTS_ACCESS_TOKEN;
     const clientId = process.env.INTEGRATION_TESTS_SPOTIFY_CLIENT_ID;
     const refreshToken = process.env.INTEGRATION_TESTS_REFRESH_TOKEN;
@@ -60,7 +60,7 @@ export function buildIntegrationTestUserSdkInstance(logResults: boolean = false)
 
     const authStrat = new ProvidedAccessTokenStrategy(clientId, expiredToken);
 
-    const fetchSpy = new FetchApiSpy(logResults);
+    const fetchSpy = new FetchApiSpy();
     const sdkConfig = {
         fetch: (input: RequestInfo | URL, init?: RequestInit | undefined) => {
             return fetchSpy.fetch(input, init);

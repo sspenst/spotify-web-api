@@ -16,7 +16,7 @@ describe("Integration: Users Endpoints", () => {
         const valid = validUser();
         const result = await sut.users.profile(valid.id);
 
-        expect(fetchSpy.request(0).input).toBe(`https://api.spotify.com/v1/users/${valid.id}`);
+        expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/users/${valid.id}`);
         expect(result.id).toBe(valid.id);
         expect(result.display_name).toBe(valid.display_name);
     });

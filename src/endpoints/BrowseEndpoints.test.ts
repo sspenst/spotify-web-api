@@ -15,7 +15,7 @@ describe("Integration: Browse Categories Endpoints", () => {
     it("getCategories can return information", async () => {
         const result = await sut.browse.getCategories();
 
-        expect(fetchSpy.request(0).input).toBe(`https://api.spotify.com/v1/browse/categories`);
+        expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/browse/categories`);
         expect(result.categories.items.length).toBeGreaterThan(0);
     });
 
@@ -24,7 +24,7 @@ describe("Integration: Browse Categories Endpoints", () => {
 
         const result = await sut.browse.getCategory(valid.id);
 
-        expect(fetchSpy.request(0).input).toBe(`https://api.spotify.com/v1/browse/categories/${valid.id}`);
+        expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/browse/categories/${valid.id}`);
         expect(result).toStrictEqual(valid);
     });
 

@@ -16,7 +16,7 @@ describe("Integration: Episodes Endpoints", () => {
         const valid = validGenres();
         const result = await sut.recommendations.genreSeeds();
 
-        expect(fetchSpy.request(0).input).toBe(`https://api.spotify.com/v1/recommendations/available-genre-seeds`);
+        expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/recommendations/available-genre-seeds`);
         expect(result).toStrictEqual(valid);
     });
 

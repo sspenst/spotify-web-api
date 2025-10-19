@@ -16,7 +16,7 @@ describe("Integration: Episodes Endpoints", () => {
         const valid = validEpisode();
         const result = await sut.episodes.get(valid.id, "GB");
 
-        expect(fetchSpy.request(0).input).toBe(`https://api.spotify.com/v1/episodes/${valid.id}?market=GB`);
+        expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/episodes/${valid.id}?market=GB`);
 
         // replace inconsistent properties
         if (result.show) {
@@ -30,7 +30,7 @@ describe("Integration: Episodes Endpoints", () => {
         const valid = validEpisode();
         const result = await sut.episodes.get([valid.id, valid.id], "GB");
 
-        expect(fetchSpy.request(0).input).toBe(`https://api.spotify.com/v1/episodes?ids=${valid.id}%2C${valid.id}&market=GB`);
+        expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/episodes?ids=${valid.id}%2C${valid.id}&market=GB`);
         expect(result[0].id).toBe(valid.id);
         expect(result[1].id).toBe(valid.id);
     });
