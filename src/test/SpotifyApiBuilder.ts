@@ -1,6 +1,6 @@
 import { SpotifyApi } from "../SpotifyApi";
 import ClientCredentialsStrategy from "../auth/ClientCredentialsStrategy";
-import FakeAuthStrategy from "../auth/FakeAuthStrategy";
+import FakeAuthStrategy from "./FakeAuthStrategy";
 import ProvidedAccessTokenStrategy from "../auth/ProvidedAccessTokenStrategy";
 import { FetchApiMock } from "./FetchApiMock";
 import { FetchApiSpy } from "./FetchApiSpy";

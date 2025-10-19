@@ -5,7 +5,7 @@ import { FetchApiMock } from "./test/FetchApiMock";
 import { validAlbumResult } from "./test/data/validAlbumResult";
 import AuthorizationCodeWithPKCEStrategy from "./auth/AuthorizationCodeWithPKCEStrategy";
 import ClientCredentialsStrategy from "./auth/ClientCredentialsStrategy";
-import FakeAuthStrategy from "./auth/FakeAuthStrategy";
+import FakeAuthStrategy from "./test/FakeAuthStrategy";
 import ProvidedAccessTokenStrategy from "./auth/ProvidedAccessTokenStrategy";
 import { AccessToken, SdkOptions } from "./types";
 import InMemoryCachingStrategy from "./caching/InMemoryCachingStrategy";
