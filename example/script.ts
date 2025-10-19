@@ -26,4 +26,5 @@ document.getElementById("url")!.setAttribute("href", profile.href);
 document.getElementById("imgUrl")!.innerText = profile.images[0]?.url ?? '(no profile image)';
 
 const accessToken = await authStrategy.getAccessToken();
+document.getElementById("accessToken")!.innerText = accessToken?.access_token ?? '(no access token)';
 document.getElementById("refreshToken")!.innerText = accessToken?.refresh_token ?? '(no refresh token)';

@@ -7,7 +7,7 @@ import { FetchApiSpy } from "./FetchApiSpy";
 import InMemoryCachingStrategy from "../caching/InMemoryCachingStrategy";
 
 import dotenv from "dotenv";
-import { SdkOptions } from "../types";
+import { AccessToken, SdkOptions } from "../types";
 dotenv.config();
 
 export function buildIntegrationTestSdkInstance(logResults: boolean = false): [SpotifyApi, FetchApiSpy] {
@@ -41,20 +41,21 @@ export function buildIntegrationTestSdkInstance(logResults: boolean = false): [S
 }
 
 export function buildIntegrationTestUserSdkInstance(logResults: boolean = false): [SpotifyApi, FetchApiSpy] {
+    const accessToken = process.env.INTEGRATION_TESTS_ACCESS_TOKEN;
     const clientId = process.env.INTEGRATION_TESTS_SPOTIFY_CLIENT_ID;
     const refreshToken = process.env.INTEGRATION_TESTS_REFRESH_TOKEN;
 
-    if (!clientId || !refreshToken) {
-        throw new Error("No client ID or refresh token provided. Please provide INTEGRATION_TESTS_SPOTIFY_CLIENT_ID and INTEGRATION_TESTS_REFRESH_TOKEN in the .env file.");
+    if (!accessToken || !clientId || !refreshToken) {
+        throw new Error("No access token, client ID or refresh token provided. Please provide INTEGRATION_TESTS_ACCESS_TOKEN, INTEGRATION_TESTS_SPOTIFY_CLIENT_ID, and INTEGRATION_TESTS_REFRESH_TOKEN in the .env file.");
     }
 
     // Create an expired token so it gets refreshed immediately with the refresh token
-    const expiredToken = {
-        access_token: 'expired',
-        token_type: 'Bearer' as const,
-        expires_in: 0,
+    const expiredToken: AccessToken = {
+        access_token: accessToken,
+        expires: Date.now() + 3600 * 1000,
+        expires_in: 3600,
         refresh_token: refreshToken,
-        expires: Date.now() - 1000 // Expired
+        token_type: 'Bearer',
     };
 
     const authStrat = new ProvidedAccessTokenStrategy(clientId, expiredToken);
