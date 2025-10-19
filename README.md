@@ -1,10 +1,10 @@
 # Spotify Web API
 
+TypeScript SDK for the [Spotify Web API](https://developer.spotify.com/web-api/).
+
 ```bash
 npm install spotify-web-api
 ```
-
-This is a TypeScript SDK for the [Spotify Web API](https://developer.spotify.com/web-api/).
 
 This package is a fork of [Spotify Web API SDK - TypeScript](https://github.com/spotify/spotify-web-api-ts-sdk), which is no longer being maintained.
 
