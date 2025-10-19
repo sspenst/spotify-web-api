@@ -1,6 +1,6 @@
 "use client";
 
-import { SearchResults, SpotifyApi } from "@sdk/index.js"; // use "@spotify/web-api-ts-sdk" in your own project
+import { SearchResults, SpotifyApi } from "@sdk/index.js"; // use "spotify-web-api" in your own project
 import sdk from "@/lib/spotify-sdk/ClientInstance";
 import { useSession, signOut, signIn } from "next-auth/react";
 import { useEffect, useState } from "react";

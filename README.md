@@ -14,7 +14,7 @@ The package contains both an ESM and CommonJS build, so you can use it in both N
 ## Using this in your project
 
 ```bash
-npm install @spotify/web-api-ts-sdk
+npm install spotify-web-api
 ```
 
 ## Running the example app
@@ -43,7 +43,7 @@ npm run start
 Creating an instance of the SDK is easy, and can be done in a number of ways depending on which form of authentication you want to use.
 
 ```js
-import { SpotifyApi } from '@spotify/web-api-ts-sdk';
+import { SpotifyApi } from 'spotify-web-api';
 
 // Choose one of the following:
 const sdk = SpotifyApi.withUserAuthorization("client-id", "http://127.0.0.1:3000", ["scope1", "scope2"]);
@@ -112,7 +112,7 @@ These functions will work as usual, triggering a client side redirect to grant p
 
 *Server Side*
 ```js
-const { SpotifyApi } = require("@spotify/web-api-ts-sdk");
+const { SpotifyApi } = require("spotify-web-api");
 
 const express = require('express');
 const bodyParser = require('body-parser'); 

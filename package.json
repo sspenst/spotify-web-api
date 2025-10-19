@@ -1,6 +1,6 @@
 {
-  "name": "@spotify/web-api-ts-sdk",
-  "version": "1.2.0",
+  "name": "spotify-web-api",
+  "version": "0.0.1",
   "description": "A typescript SDK for the Spotify Web API",
   "main": "dist/cjs/index.js",
   "module": "dist/mjs/index.js",
@@ -24,10 +24,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/spotify/spotify-web-api-ts-sdk"
+    "url": "https://github.com/sspenst/spotify-web-api"
   },
-  "author": "Spotify",
-  "license": "Apache",
+  "author": "Spencer Spenst",
+  "license": "Apache-2.0",
   "devDependencies": {
     "@commitlint/cli": "^18.4.4",
     "@commitlint/config-conventional": "^18.4.4",
