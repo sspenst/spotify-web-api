@@ -29,22 +29,25 @@
   "author": "Spencer Spenst",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@commitlint/cli": "^18.4.4",
-    "@commitlint/config-conventional": "^18.4.4",
-    "@commitlint/cz-commitlint": "^18.4.4",
+    "@commitlint/cli": "^18.6.1",
+    "@commitlint/config-conventional": "^18.6.3",
+    "@commitlint/cz-commitlint": "^18.6.1",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
-    "@types/node": "^20.3.2",
-    "@types/uuid": "^9.0.2",
-    "commitizen": "^4.3.0",
-    "dotenv": "^16.3.1",
+    "@types/node": "^20.19.22",
+    "@types/uuid": "^9.0.8",
+    "commitizen": "^4.3.1",
+    "dotenv": "^16.6.1",
     "husky": "^8.0.3",
     "jsdom": "^22.1.0",
-    "semantic-release": "^23.0.0",
-    "typescript": "^5.1.6",
-    "uuid": "^9.0.0",
-    "vite": "^4.3.9",
-    "vitest": "^0.32.2"
+    "semantic-release": "^23.1.1",
+    "typescript": "^5.9.3",
+    "uuid": "^9.0.1",
+    "vite": "^4.5.14",
+    "vitest": "^0.32.4"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   },
   "publishConfig": {
     "access": "public"

@@ -1,12 +1,10 @@
-<!-- See: CONTRIBUTING.md#Pull-Requests -->
-
 ### Summary
 
-<!-- Explain the context and why you're making that change.  What is the problem you're trying to solve? -->
+<!-- Explain the context and why you're making that change. What is the problem you're trying to solve? -->
 
 ### Changes
 
-<!-- Describe the solution and changes that you have made -->
+<!-- Describe the solution and changes that you have made. -->
 
 ### Results
 
