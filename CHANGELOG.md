@@ -1,3 +1,10 @@
+## [0.0.3](https://github.com/sspenst/spotify-web-api/compare/v0.0.2...v0.0.3) (2025-10-19)
+
+
+### Bug Fixes
+
+* @sspenst/spotify-web-api ([33c60dd](https://github.com/sspenst/spotify-web-api/commit/33c60ddb5f3668abbb99e1bd6e8d7131cd4163e9))
+
 ## [0.0.2](https://github.com/sspenst/spotify-web-api/compare/v0.0.1...v0.0.2) (2025-10-19)
 
 

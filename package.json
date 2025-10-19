@@ -1,6 +1,6 @@
 {
   "name": "@sspenst/spotify-web-api",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "TypeScript SDK for the Spotify Web API",
   "main": "dist/cjs/index.js",
   "module": "dist/mjs/index.js",
