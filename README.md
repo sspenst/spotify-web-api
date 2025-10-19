@@ -3,7 +3,7 @@
 TypeScript SDK for the [Spotify Web API](https://developer.spotify.com/web-api/).
 
 ```bash
-npm install spotify-web-api
+npm install @sspenst/spotify-web-api
 ```
 
 This package is a fork of [Spotify Web API SDK - TypeScript](https://github.com/spotify/spotify-web-api-ts-sdk), which is no longer being maintained.
@@ -36,7 +36,7 @@ npm run start
 Creating an instance of the SDK is easy, and can be done in a number of ways depending on which form of authentication you want to use.
 
 ```js
-import { SpotifyApi } from 'spotify-web-api';
+import { SpotifyApi } from '@sspenst/spotify-web-api';
 
 // Choose one of the following:
 const sdk = SpotifyApi.withUserAuthorization("client-id", "http://127.0.0.1:3000", ["scope1", "scope2"]);
@@ -105,7 +105,7 @@ These functions will work as usual, triggering a client side redirect to grant p
 
 *Server Side*
 ```js
-const { SpotifyApi } = require("spotify-web-api");
+const { SpotifyApi } = require("@sspenst/spotify-web-api");
 
 const express = require('express');
 const bodyParser = require('body-parser'); 
