@@ -12,7 +12,6 @@ dist-ssr
 explorations
 node_modules
 temp
-TODOs.md
 .eslintcache
 /*.env
 /example/.env

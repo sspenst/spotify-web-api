@@ -158,9 +158,6 @@ describe("Integration: Users Endpoints (logged in user)", () => {
     });
 
     it("create and modify playlists for a user works", async () => {
-        const valid = validAlbumResult();
-        const validTrack = valid.tracks.items[0];
-
         const me = await sut.currentUser.profile();
 
         const result = await sut.playlists.createPlaylist(me.id, {
@@ -168,15 +165,20 @@ describe("Integration: Users Endpoints (logged in user)", () => {
             description: "test playlist description!"
         });
 
-        const file = fs.readFileSync("./src/test/valid-image.jpg", { encoding: "base64" });
+        const file = fs.readFileSync("./src/test/data/valid-image.jpg", { encoding: "base64" });
+        const otherTrackId = "0ZEigpVOtVunIcimL7dJuh";
+        const otherTrackUri = `spotify:track:${otherTrackId}`;
+        const valid = validAlbumResult();
+        const validTrack = valid.tracks.items[0];
 
         await sut.playlists.addCustomPlaylistCoverImage(result.id, file);
-        await sut.playlists.addItemsToPlaylist(result.id, [validTrack.uri, validTrack.uri, validTrack.uri, "spotify:track:0ZEigpVOtVunIcimL7dJuh"]);
+        await sut.playlists.addItemsToPlaylist(result.id, [validTrack.uri, validTrack.uri, validTrack.uri, otherTrackUri]);
 
         const snapshotUpdated = await sut.playlists.movePlaylistItems(result.id, 3, 1, 0); // Move last track to start
 
         let playlist = await sut.playlists.getPlaylist(result.id);
         expect(playlist.tracks.items.length).toBe(4);
+        expect(playlist.tracks.items[0].track.id).toBe(otherTrackId);
         expect(playlist.tracks.items[1].track.id).toBe(validTrack.id);
 
         await sut.playlists.removeItemsFromPlaylist(result.id, {
@@ -195,20 +197,6 @@ describe("Integration: Users Endpoints (logged in user)", () => {
         const playlist2 = await sut.playlists.getPlaylist(result.id);
         expect(playlist2.name).toBe("test playlist name 2");
 
-        await sut.currentUser.playlists.unfollow(result.id);
-    });
-
-    it("can set valid image form file (node.js)", async () => {
-        const me = await sut.currentUser.profile();
-
-        const result = await sut.playlists.createPlaylist(me.id, {
-            name: "test playlist name!",
-            description: "test playlist description!"
-        });
-
-        const file = fs.readFileSync("./src/test/valid-image.jpg", { encoding: "base64" });
-
-        await sut.playlists.addCustomPlaylistCoverImage(result.id, file);
         await sut.currentUser.playlists.unfollow(result.id);
     });
 
@@ -233,6 +221,7 @@ describe("Integration: Users Endpoints (logged in user)", () => {
         expect(result2.items.find((a) => a.album.id === albumId)).toBeFalsy();
     });
 
+    // TODO: deprecated
     it("getFeaturedPlaylists returns playlists", async () => {
         const result = await sut.browse.getFeaturedPlaylists();
 
@@ -240,6 +229,7 @@ describe("Integration: Users Endpoints (logged in user)", () => {
         expect(result.playlists.items.length).toBeGreaterThan(0);
     });
 
+    // TODO: deprecated
     it("getCategorysPlaylists returns playlists", async () => {
         const category_id = "0JQ5DAqbMKFEC4WFtoNRpw";
         const result = await sut.browse.getPlaylistsForCategory(category_id);
@@ -264,13 +254,13 @@ describe("Integration: Users Endpoints (logged in user)", () => {
 
     it("can save and remove audiobook for user", async () => {
         await sut.currentUser.audiobooks.saveAudiobooks([audioBookId]);
-        expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/me/audiobooks`);
+        expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/me/audiobooks?ids=${audioBookId}`);
 
         const result2 = await sut.currentUser.audiobooks.savedAudiobooks();
         expect(result2.items.find((a) => a.id === audioBookId)).toBeTruthy();
 
         await sut.currentUser.audiobooks.removeSavedAudiobooks([audioBookId]);
-        expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/me/audiobooks`);
+        expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/me/audiobooks?ids=${audioBookId}`);
 
         const result3 = await sut.currentUser.audiobooks.savedAudiobooks();
         expect(result3.items.find((a) => a.id === audioBookId)).toBeFalsy();
