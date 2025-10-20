@@ -1,3 +1,10 @@
+## [0.0.4](https://github.com/sspenst/spotify-web-api/compare/v0.0.3...v0.0.4) (2025-10-20)
+
+
+### Bug Fixes
+
+* current user param updates ([9cc8365](https://github.com/sspenst/spotify-web-api/commit/9cc8365842a48251565825e6b3e05f92d3c415c1))
+
 ## [0.0.3](https://github.com/sspenst/spotify-web-api/compare/v0.0.2...v0.0.3) (2025-10-19)
 
 
