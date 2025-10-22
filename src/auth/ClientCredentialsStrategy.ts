@@ -11,7 +11,6 @@ export default class ClientCredentialsStrategy implements IAuthStrategy {
     constructor(
         private clientId: string,
         private clientSecret: string,
-        private scopes: string[] = []
     ) {
     }
 
@@ -45,12 +44,6 @@ export default class ClientCredentialsStrategy implements IAuthStrategy {
     }
 
     private async getTokenFromApi(): Promise<AccessToken> {
-        const options = {
-            grant_type: 'client_credentials',
-            scope: this.scopes.join(' ')
-        } as any;
-
-        const bodyAsString = Object.keys(options).map(key => key + '=' + options[key]).join('&');
         const hasBuffer = typeof Buffer !== 'undefined';
         const credentials = `${this.clientId}:${this.clientSecret}`;
 
@@ -64,7 +57,7 @@ export default class ClientCredentialsStrategy implements IAuthStrategy {
                 "Content-Type": "application/x-www-form-urlencoded",
                 "Authorization": `Basic ${basicAuth}`
             },
-            body: bodyAsString
+            body: "grant_type=client_credentials"
         });
 
         if (result.status !== 200) {
