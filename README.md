@@ -40,7 +40,7 @@ import { SpotifyApi } from '@sspenst/spotify-web-api';
 
 // Choose one of the following:
 const sdk = SpotifyApi.withUserAuthorization("client-id", "http://127.0.0.1:3000", ["scope1", "scope2"]);
-const sdk = SpotifyApi.withClientCredentials("client-id", "secret", ["scope1", "scope2"]);
+const sdk = SpotifyApi.withClientCredentials("client-id", "secret");
 ```
 
 Each of these factory methods will return a `SpotifyApi` instance, which you can use to make requests to the Spotify Web API.

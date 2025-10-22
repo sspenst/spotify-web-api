@@ -75,7 +75,7 @@ describe("SpotifyAPI Instance", () => {
         });
 
         it("can create an instance with the client credentials strategy configured", async () => {
-            const sut = SpotifyApi.withClientCredentials("client-id", "secret", ["scope1", "scope2"]);
+            const sut = SpotifyApi.withClientCredentials("client-id", "secret");
             expect(sut["authenticationStrategy"].constructor.name).toBe(ClientCredentialsStrategy.name);
         });
 
