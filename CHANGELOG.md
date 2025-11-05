@@ -1,3 +1,10 @@
+## [0.0.6](https://github.com/sspenst/spotify-web-api/compare/v0.0.5...v0.0.6) (2025-11-05)
+
+
+### Bug Fixes
+
+* use web crypto instead of require ([db3c078](https://github.com/sspenst/spotify-web-api/commit/db3c078db3b7e17104fd174abbfdb51a4c1142b2))
+
 ## [0.0.5](https://github.com/sspenst/spotify-web-api/compare/v0.0.4...v0.0.5) (2025-10-22)
 
 
