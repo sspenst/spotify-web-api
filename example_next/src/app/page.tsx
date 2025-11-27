@@ -27,7 +27,7 @@ export default function Home() {
 }
 
 function SpotifySearch({ sdk }: { sdk: SpotifyApi }) {
-  const [results, setResults] = useState<SearchResults>({} as SearchResults);
+  const [results, setResults] = useState<SearchResults<['artist']>>({} as SearchResults<['artist']>);
 
   useEffect(() => {
     (async () => {
