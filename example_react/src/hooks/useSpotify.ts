@@ -1,14 +1,13 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SpotifyApi, SdkOptions, AuthorizationCodeWithPKCEStrategy } from "../../../src";
 
 export function useSpotify(clientId: string, redirectUrl: string, scopes: string[], config?: SdkOptions) {
 
     const [sdk, setSdk] = useState<SpotifyApi | null>(null);
-    const { current: activeScopes } = useRef(scopes);
 
     useEffect(() => {
         (async () => {
-            const auth = new AuthorizationCodeWithPKCEStrategy(clientId, redirectUrl, activeScopes);
+            const auth = new AuthorizationCodeWithPKCEStrategy(clientId, redirectUrl, scopes);
             const internalSdk = new SpotifyApi(auth, config);
 
             try {
@@ -28,7 +27,7 @@ export function useSpotify(clientId: string, redirectUrl: string, scopes: string
             }
 
         })();
-    }, [clientId, redirectUrl, config, activeScopes]);
+    }, [clientId, redirectUrl, config, scopes]);
 
     return sdk;
 }
