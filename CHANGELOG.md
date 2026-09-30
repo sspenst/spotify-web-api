@@ -1,3 +1,15 @@
+# [2.0.0](https://github.com/sspenst/spotify-web-api/compare/v1.0.1...v2.0.0) (2026-09-30)
+
+
+### Bug Fixes
+
+* **player:** fix playback position, command responses and nullable types ([9424071](https://github.com/sspenst/spotify-web-api/commit/94240719e95c2472512bee53115a863b0b7ec421)), closes [#3](https://github.com/sspenst/spotify-web-api/issues/3) [#12](https://github.com/sspenst/spotify-web-api/issues/12) [#13](https://github.com/sspenst/spotify-web-api/issues/13) [#17](https://github.com/sspenst/spotify-web-api/issues/17) [#23](https://github.com/sspenst/spotify-web-api/issues/23)
+
+
+### BREAKING CHANGES
+
+* **player:** Playback read results and nullable playback fields require null checks.
+
 ## [1.0.1](https://github.com/sspenst/spotify-web-api/compare/v1.0.0...v1.0.1) (2026-09-30)
 
 
