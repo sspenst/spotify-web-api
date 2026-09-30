@@ -20,6 +20,10 @@ export default class EndpointsBase {
         return await this.api.makeRequest<TReturnType>("DELETE", url, body);
     }
 
+    protected async sendCommand(method: "PUT" | "POST", url: string, body?: unknown): Promise<void> {
+        await this.api.makeRequest(method, url, body, undefined, "none");
+    }
+
     protected paramsFor(args: any) {
         const params = new URLSearchParams();
         for (let key of Object.getOwnPropertyNames(args)) {
@@ -30,4 +34,3 @@ export default class EndpointsBase {
         return [...params].length > 0 ? `?${params.toString()}` : "";
     }
 }
-

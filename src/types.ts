@@ -719,9 +719,9 @@ export interface PlaybackState {
     shuffle_state: boolean
     context: Context | null
     timestamp: number
-    progress_ms: number
+    progress_ms: number | null
     is_playing: boolean
-    item: TrackItem
+    item: TrackItem | null
     currently_playing_type: string
     actions: Actions
 }
@@ -775,7 +775,7 @@ export interface RecentlyPlayedTracksPage {
 export interface PlayHistory {
     track: Track
     played_at: string
-    context: Context
+    context: Context | null
 }
 
 export interface Queue {

@@ -10,7 +10,7 @@ export default class PlayerEndpoints extends EndpointsBase {
 
     public getPlaybackState(market?: Market, additional_types?: string) {
         const params = this.paramsFor({ market, additional_types });
-        return this.getRequest<PlaybackState>(`me/player${params}`);
+        return this.getRequest<PlaybackState | null>(`me/player${params}`);
     }
 
     public getAvailableDevices() {
@@ -19,7 +19,7 @@ export default class PlayerEndpoints extends EndpointsBase {
 
     public getCurrentlyPlayingTrack(market?: Market, additional_types?: string) {
         const params = this.paramsFor({ market, additional_types });
-        return this.getRequest<PlaybackState>(`me/player/currently-playing${params}`);
+        return this.getRequest<PlaybackState | null>(`me/player/currently-playing${params}`);
     }
 
     public getRecentlyPlayedTracks(limit?: MaxInt<50>, queryRange?: QueryRange) {
@@ -45,51 +45,51 @@ export default class PlayerEndpoints extends EndpointsBase {
         if (device_ids.length > 1) {
             throw new Error("Although an array is accepted, only a single device_id is currently supported. Supplying more than one will return 400 Bad Request");
         }
-        await this.putRequest('me/player', { device_ids, play });
+        await this.sendCommand("PUT", 'me/player', { device_ids, play });
     }
 
     public async startResumePlayback(device_id: string, context_uri?: string, uris?: string[], offset?: object, positionMs?: number) {
         const params = this.paramsFor({ device_id });
-        await this.putRequest(`me/player/play${params}`, { context_uri, uris, offset, positionMs });
+        await this.sendCommand("PUT", `me/player/play${params}`, { context_uri, uris, offset, position_ms: positionMs });
     }
 
     public async pausePlayback(device_id: string) {
         const params = this.paramsFor({ device_id });
-        await this.putRequest(`me/player/pause${params}`);
+        await this.sendCommand("PUT", `me/player/pause${params}`);
     }
 
     public async skipToNext(device_id: string) {
         const params = this.paramsFor({ device_id });
-        await this.postRequest(`me/player/next${params}`);
+        await this.sendCommand("POST", `me/player/next${params}`);
     }
 
     public async skipToPrevious(device_id: string) {
         const params = this.paramsFor({ device_id });
-        await this.postRequest(`me/player/previous${params}`);
+        await this.sendCommand("POST", `me/player/previous${params}`);
     }
 
     public async seekToPosition(position_ms: number, device_id?: string) {
         const params = this.paramsFor({ position_ms, device_id });
-        await this.putRequest(`me/player/seek${params}`);
+        await this.sendCommand("PUT", `me/player/seek${params}`);
     }
 
     public async setRepeatMode(state: 'track' | 'context' | 'off', device_id?: string) {
         const params = this.paramsFor({ state, device_id });
-        await this.putRequest(`me/player/repeat${params}`);
+        await this.sendCommand("PUT", `me/player/repeat${params}`);
     }
 
     public async setPlaybackVolume(volume_percent: number, device_id?: string) {
         const params = this.paramsFor({ volume_percent, device_id });
-        await this.putRequest(`me/player/volume${params}`);
+        await this.sendCommand("PUT", `me/player/volume${params}`);
     }
 
     public async togglePlaybackShuffle(state: boolean, device_id?: string) {
         const params = this.paramsFor({ state, device_id });
-        await this.putRequest(`me/player/shuffle${params}`);
+        await this.sendCommand("PUT", `me/player/shuffle${params}`);
     }
 
     public async addItemToPlaybackQueue(uri: string, device_id?: string) {
         const params = this.paramsFor({ uri, device_id });
-        await this.postRequest(`me/player/queue${params}`);
+        await this.sendCommand("POST", `me/player/queue${params}`);
     }
 }

@@ -187,6 +187,27 @@ See Spotify's [playlist migration guide](https://developer.spotify.com/documenta
 [library save reference](https://developer.spotify.com/documentation/web-api/reference/save-library-items),
 and [cover upload reference](https://developer.spotify.com/documentation/web-api/reference/upload-custom-playlist-cover).
 
+## Playback APIs
+
+`player.startResumePlayback(deviceId, contextUri, uris, offset, positionMs)` sends
+the position as Spotify's `position_ms` field, including a position of zero.
+Playback commands resolve without a value after a successful response, even if
+Spotify returns a text body. HTTP failures still go through response validation
+and error handling. Custom deserializers are used for data responses, and are not
+called for playback commands.
+
+`getPlaybackState()` and `getCurrentlyPlayingTrack()` can return `null` when
+Spotify responds with no content. Within `PlaybackState`, `item`, `progress_ms`
+and `context` can also be `null`; recently played entries can have a null context.
+Check these values before accessing them:
+
+```ts
+const playback = await sdk.player.getPlaybackState();
+if (playback?.item) {
+    console.log(playback.item.name);
+}
+```
+
 ## Extensibility
 
 All of the constructors support a configuration object that lets you override the default behavior of the SDK.

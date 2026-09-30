@@ -73,7 +73,10 @@ export class SpotifyApi {
         this.authenticationStrategy.setConfiguration(this.sdkConfig);
     }
 
-    public async makeRequest<TReturnType>(method: "GET" | "POST" | "PUT" | "DELETE", url: string, body: any = undefined, contentType: string | undefined = undefined): Promise<TReturnType> {
+    public makeRequest<TReturnType>(method: "GET" | "POST" | "PUT" | "DELETE", url: string, body?: any, contentType?: string): Promise<TReturnType>;
+    /** Validate the response without deserializing a body for commands that return no value. */
+    public makeRequest(method: "GET" | "POST" | "PUT" | "DELETE", url: string, body: any, contentType: string | undefined, responseType: "none"): Promise<void>;
+    public async makeRequest<TReturnType>(method: "GET" | "POST" | "PUT" | "DELETE", url: string, body: any = undefined, contentType: string | undefined = undefined, responseType: "json" | "none" = "json"): Promise<TReturnType | void> {
         try {
             const accessToken = await this.authenticationStrategy.getOrCreateAccessToken();
             if (isEmptyAccessToken(accessToken)) {
@@ -102,6 +105,9 @@ export class SpotifyApi {
             }
 
             await this.sdkConfig.responseValidator.validateResponse(result);
+            if (responseType === "none") {
+                return;
+            }
             return this.sdkConfig.deserializer.deserialize<TReturnType>(result);
         } catch (error) {
             const handled = await this.sdkConfig.errorHandler.handleErrors(error);
