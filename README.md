@@ -6,9 +6,11 @@ TypeScript SDK for the [Spotify Web API](https://developer.spotify.com/web-api/)
 npm install @sspenst/spotify-web-api
 ```
 
-This package is a fork of [Spotify Web API SDK - TypeScript](https://github.com/spotify/spotify-web-api-ts-sdk), which is no longer being maintained.
+This package is a maintained fork of [Spotify Web API SDK - TypeScript](https://github.com/spotify/spotify-web-api-ts-sdk), incorporating fixes and improvements for issues raised here and upstream.
 
-The package contains both an ESM and CommonJS build, so you can use it in both Node and the Browser.
+The package includes ESM and CommonJS builds for Node.js 20+ and modern browsers, using native `fetch`.
+
+To stream audio inside a browser, use Spotify's [Web Playback SDK](https://developer.spotify.com/documentation/web-playback-sdk) alongside this package.
 
 ## Running the example app
 
@@ -67,7 +69,7 @@ We do auto-token refresh when expired and a refresh token is available.
 
 ### Picking an Authentication Method
 
-If you're building a browser based application, you should use Authorization Code Flow with PKCE. This is the most secure way to authenticate your users and handles the redirection from your app to Spotify and back. Your server side code will not have access to the Spotify API with user access scopes, but you can use the SDK to perform client side requests with the users access token.
+For browser applications, use Authorization Code Flow with PKCE. It handles the redirect to Spotify and back, and lets you make requests with the user's access token.
 
 Calling any of the methods on the SDK will automatically perform any redirects/refreshes that are necessary.
 
@@ -77,9 +79,9 @@ const user = await sdk.currentUser.profile()
 ```
 
 
-If you're building a server side application, you should use Client Credentials Flow, and is the correct choice when you have both your Client ID and Client Secret available. This flow is not available in the browser (as you should not embed your Client Secret in Client Side web applications), so should only be used from Node.js.
+For server applications that do not need user data, use Client Credentials Flow. It requires a Client ID and Client Secret and only supports endpoints that do not require user authorization. Keep the Client Secret on the server.
 
-Mixed Server and Client Side Authentication is a special case, and is covered in the section below. This is useful if you want to perform requests with a users access token from your server side code.
+Server applications that need user data require a user's access token. See Mixed Server and Client Side Authentication below for one way to obtain and use it.
 
 ### Mixed Server and Client Side Authentication
 
@@ -248,7 +250,7 @@ If you return `true` from your error handler, the SDK will not throw an error, a
 
 ### Extensibility - redirectionStrategy
 
-You can override the default redirection strategy by passing in a class that implements the `IRedirect` interface. By default, we use the `DocumentLocationRedirectionStrategy` class.
+You can override the default redirection strategy by passing in a class that implements the `IRedirectionStrategy` interface. By default, we use the `DocumentLocationRedirectionStrategy` class.
 
 ```ts
 export default class DocumentLocationRedirectionStrategy implements IRedirectionStrategy {
@@ -265,18 +267,20 @@ You might want to override this behaviour if you use a client side framework lik
 
 ### Extensibility - cachingStrategy
 
-You can override the default caching strategy by passing in a class that implements the `ICache` interface. By default, we use the `LocalStorageCachingStrategy` class.
+You can override token caching with an `ICachingStrategy` implementation. The defaults are `LocalStorageCachingStrategy` in browsers and `InMemoryCachingStrategy` in Node.js.
 
 ```ts
 interface ICachingStrategy {
-    getOrCreate<T>(cacheKey: string, createFunction: () => Promise<T & ICachable & object>): Promise<T & ICachable>;
-    get<T>(cacheKey: string): T & ICachable | null;
+    getOrCreate<T>(
+        cacheKey: string,
+        createFunction: () => Promise<T & ICachable & object>,
+        updateFunction?: (item: T) => Promise<T & ICachable & object>
+    ): Promise<T & ICachable>;
+    get<T>(cacheKey: string): Promise<T & ICachable | null>;
     setCacheItem<T>(cacheKey: string, item: T & ICachable): void;
     remove(cacheKey: string): void;
 }
 ```
-
-We provide a default browser (localStorage) caching strategy and (TODO) a node in-memory caching strategy.
 
 ## Running the tests
 
