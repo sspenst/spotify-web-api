@@ -1,3 +1,21 @@
+# [3.0.0](https://github.com/sspenst/spotify-web-api/compare/v2.0.0...v3.0.0) (2026-09-30)
+
+
+### Bug Fixes
+
+* **types:** correct nullable request results and resource response types ([2947c80](https://github.com/sspenst/spotify-web-api/commit/2947c8007d49c95d0e2c889a984761655830433b)), closes [#4](https://github.com/sspenst/spotify-web-api/issues/4) [#5](https://github.com/sspenst/spotify-web-api/issues/5)
+
+
+### Features
+
+* added new interface ISpotifyError ([59d3427](https://github.com/sspenst/spotify-web-api/commit/59d342755478ff6afde82faa6dcf21404ba1bd47))
+
+
+### BREAKING CHANGES
+
+* **types:** Handle null data, optional fields and literal types. Show writes return void; 204
+is validated.
+
 # [2.0.0](https://github.com/sspenst/spotify-web-api/compare/v1.0.1...v2.0.0) (2026-09-30)
 
 
