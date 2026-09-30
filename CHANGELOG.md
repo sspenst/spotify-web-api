@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/sspenst/spotify-web-api/compare/v1.0.0...v1.0.1) (2026-09-30)
+
+
+### Bug Fixes
+
+* align integration tests with spotify endpoint restrictions ([c059e2f](https://github.com/sspenst/spotify-web-api/commit/c059e2fddf954b8bf92b5365f16186e294bcddad))
+
 # [1.0.0](https://github.com/sspenst/spotify-web-api/compare/v0.0.6...v1.0.0) (2026-09-30)
 
 
