@@ -1,3 +1,15 @@
+# [1.0.0](https://github.com/sspenst/spotify-web-api/compare/v0.0.6...v1.0.0) (2026-09-30)
+
+
+### Bug Fixes
+
+* playlist fixes for updated spotify apis ([23884f5](https://github.com/sspenst/spotify-web-api/commit/23884f5c1e27fe56dd6c8453b3ecdc05035aed02)), closes [#20](https://github.com/sspenst/spotify-web-api/issues/20) [#49](https://github.com/sspenst/spotify-web-api/issues/49) [#50](https://github.com/sspenst/spotify-web-api/issues/50)
+
+
+### BREAKING CHANGES
+
+* Responses use items / item; callers using tracks / track must migrate.
+
 ## [0.0.6](https://github.com/sspenst/spotify-web-api/compare/v0.0.5...v0.0.6) (2025-11-05)
 
 
