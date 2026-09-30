@@ -9,6 +9,7 @@ import { ICacheStore } from "./caching/ICacheStore.js";
 import GenericCache from "./caching/GenericCache.js";
 import ConsoleLoggingErrorHandler from "./errorhandling/ConsoleLoggingErrorHandler.js";
 import NoOpErrorHandler from "./errorhandling/NoOpErrorHandler.js";
+import SpotifyError from "./errorhandling/SpotifyError.js";
 import DocumentLocationRedirectionStrategy from "./redirection/DocumentLocationRedirectionStrategy.js";
 import DefaultResponseValidator from "./responsevalidation/DefaultResponseValidator.js";
 import DefaultResponseDeserializer from "./serialization/DefaultResponseDeserializer.js";
@@ -25,6 +26,7 @@ export {
     GenericCache,
     ConsoleLoggingErrorHandler,
     NoOpErrorHandler,
+    SpotifyError,
     DocumentLocationRedirectionStrategy,
     DefaultResponseValidator,
     DefaultResponseDeserializer,

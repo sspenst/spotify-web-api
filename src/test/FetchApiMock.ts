@@ -20,6 +20,7 @@ export class FetchApiMock {
     public queueRawResponseBody(status: number, body: string) {
         const fakeResponse = {
             status: status,
+            clone: () => fakeResponse,
             text: () => {
                 return JSON.stringify(body);
             }
@@ -40,5 +41,4 @@ export class FetchApiMock {
         return [headers, body];
     }
 }
-
 
