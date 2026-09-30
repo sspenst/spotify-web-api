@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, expectTypeOf, it } from "vitest";
+import { assert, beforeEach, describe, expect, expectTypeOf, it } from "vitest";
 import { buildIntegrationTestSdkInstance } from "../test/SpotifyApiBuilder";
 import { SpotifyApi } from "../SpotifyApi";
 import { FetchApiSpy } from "../test/FetchApiSpy";
@@ -15,6 +15,7 @@ describe("Integration: Search Endpoints", () => {
     it("getTrack can return information", async () => {
         const q = "Katatonia"
         const result = await sut.search(q, ["artist"]);
+        assert(result !== null);
 
         const allMentionedArtists = result.artists.items.map(artist => artist.name);
 
@@ -27,13 +28,13 @@ describe("Integration: Search Endpoints", () => {
         const types: ItemTypes[] = ["artist"]
         const result = await sut.search(q, types);
 
-        expectTypeOf(result).toMatchTypeOf<{ artists?: Page<Artist> }>
+        expectTypeOf(result).toMatchTypeOf<{ artists?: Page<Artist> } | null>
     })
     
     it("result type should assert property as present if types are passed as a tuple", async () => {
         const q = "Katatonia"
         const result = await sut.search(q, ['artist']);
 
-        expectTypeOf(result).toEqualTypeOf<{ artists: Page<Artist> }>
+        expectTypeOf(result).toEqualTypeOf<{ artists: Page<Artist> } | null>
     })
 });

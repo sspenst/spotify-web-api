@@ -73,15 +73,16 @@ export class SpotifyApi {
         this.authenticationStrategy.setConfiguration(this.sdkConfig);
     }
 
-    public makeRequest<TReturnType>(method: "GET" | "POST" | "PUT" | "DELETE", url: string, body?: any, contentType?: string): Promise<TReturnType>;
+    /** Returns null when authentication is pending, the response has no data, or an error is explicitly handled. */
+    public makeRequest<TReturnType>(method: "GET" | "POST" | "PUT" | "DELETE", url: string, body?: any, contentType?: string): Promise<TReturnType | null>;
     /** Validate the response without deserializing a body for commands that return no value. */
     public makeRequest(method: "GET" | "POST" | "PUT" | "DELETE", url: string, body: any, contentType: string | undefined, responseType: "none"): Promise<void>;
-    public async makeRequest<TReturnType>(method: "GET" | "POST" | "PUT" | "DELETE", url: string, body: any = undefined, contentType: string | undefined = undefined, responseType: "json" | "none" = "json"): Promise<TReturnType | void> {
+    public async makeRequest<TReturnType>(method: "GET" | "POST" | "PUT" | "DELETE", url: string, body: any = undefined, contentType: string | undefined = undefined, responseType: "json" | "none" = "json"): Promise<TReturnType | null | void> {
         try {
             const accessToken = await this.authenticationStrategy.getOrCreateAccessToken();
             if (isEmptyAccessToken(accessToken)) {
                 console.warn("No access token found, authenticating now.");
-                return null as TReturnType;
+                return responseType === "none" ? undefined : null;
             }
 
             const token = accessToken?.access_token;
@@ -100,21 +101,22 @@ export class SpotifyApi {
             const result = await this.sdkConfig.fetch(fullUrl, opts);
             this.sdkConfig.afterRequest(fullUrl, opts, result);
 
+            await this.sdkConfig.responseValidator.validateResponse(result);
+
             if (result.status === 204) {
-                return null as TReturnType;
+                return responseType === "none" ? undefined : null;
             }
 
-            await this.sdkConfig.responseValidator.validateResponse(result);
             if (responseType === "none") {
                 return;
             }
-            return this.sdkConfig.deserializer.deserialize<TReturnType>(result);
+            return await this.sdkConfig.deserializer.deserialize<TReturnType>(result);
         } catch (error) {
             const handled = await this.sdkConfig.errorHandler.handleErrors(error);
             if (!handled) {
                 throw error;
             }
-            return null as TReturnType;
+            return responseType === "none" ? undefined : null;
         }
     }
 

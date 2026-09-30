@@ -1,5 +1,5 @@
-import { Scopes, SpotifyApi } from "../src/index";
-import AuthorizationCodeWithPKCEStrategy from "../src/auth/AuthorizationCodeWithPKCEStrategy";
+import { Scopes, SpotifyApi } from "../src/index.js";
+import AuthorizationCodeWithPKCEStrategy from "../src/auth/AuthorizationCodeWithPKCEStrategy.js";
 
 const authStrategy = new AuthorizationCodeWithPKCEStrategy(
     import.meta.env.VITE_SPOTIFY_CLIENT_ID,
@@ -10,6 +10,9 @@ const authStrategy = new AuthorizationCodeWithPKCEStrategy(
 const spotify = new SpotifyApi(authStrategy);
 const profile = await spotify.currentUser.profile();
 console.log(profile);
+if (profile === null) {
+    throw new Error("No profile returned. Complete authentication and try again.");
+}
 
 document.getElementById("displayName")!.innerText = profile.display_name;
 if (profile.images[0]) {
@@ -18,7 +21,7 @@ if (profile.images[0]) {
     document.getElementById("avatar")!.appendChild(profileImage);
 }
 document.getElementById("id")!.innerText = profile.id;
-document.getElementById("email")!.innerText = profile.email;
+document.getElementById("email")!.innerText = profile.email ?? "(email unavailable)";
 document.getElementById("uri")!.innerText = profile.uri;
 document.getElementById("uri")!.setAttribute("href", profile.external_urls.spotify);
 document.getElementById("url")!.innerText = profile.href;

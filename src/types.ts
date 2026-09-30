@@ -42,8 +42,9 @@ export interface IValidateResponses {
     validateResponse: (response: Response) => Promise<any | null>;
 }
 
+/** Deserialize data responses; return null when the response contains no data. */
 export interface IResponseDeserializer {
-    deserialize<TReturnType>(response: Response): Promise<TReturnType>;
+    deserialize<TReturnType>(response: Response): Promise<TReturnType | null>;
 }
 
 export interface ICachingStrategy {
@@ -64,6 +65,7 @@ export interface ICachable {
 }
 
 // API return types
+// Fields removed in Development mode may be absent; shared types also support older/Extended Quota responses.
 
 export type MaxInt<T extends number> = number extends T ? number : _Range<T, []>;
 export type _Range<T extends number, R extends unknown[]> = R['length'] extends T ? R[number] | T : _Range<T, [R['length'], ...R]>;
@@ -91,9 +93,9 @@ export interface AccessToken {
     expires?: number;
 }
 
-interface AlbumBase {
+export interface AlbumBase {
     album_type: string
-    available_markets: string[]
+    available_markets?: string[]
     copyrights: Copyright[]
     external_ids: ExternalIds
     external_urls: ExternalUrls
@@ -101,19 +103,19 @@ interface AlbumBase {
     href: string
     id: string
     images: Image[]
-    label: string
+    label?: string
     name: string
-    popularity: number
+    popularity?: number
     release_date: string
     release_date_precision: string
     restrictions?: Restrictions
     total_tracks: number
-    type: string
+    type: "album"
     uri: string
 }
 
 export interface SimplifiedAlbum extends AlbumBase {
-    album_group: string
+    album_group?: string
     artists: SimplifiedArtist[]
 }
 
@@ -174,7 +176,7 @@ export interface AddedBy {
     external_urls: ExternalUrls
     href: string
     id: string
-    type: string
+    type: "user"
     uri: string
 }
 
@@ -182,13 +184,13 @@ export interface LinkedFrom {
     external_urls: ExternalUrls
     href: string
     id: string
-    type: string
+    type: "track"
     uri: string
 }
 
 export interface SimplifiedTrack {
     artists: SimplifiedArtist[]
-    available_markets: string[]
+    available_markets?: string[]
     disc_number: number
     duration_ms: number
     episode: boolean;
@@ -201,7 +203,7 @@ export interface SimplifiedTrack {
     preview_url: string | null
     track: boolean;
     track_number: number
-    type: string
+    type: "track"
     uri: string
     is_playable?: boolean
     linked_from?: LinkedFrom
@@ -222,7 +224,7 @@ export interface ExternalIds {
 export interface Track extends SimplifiedTrack {
     album: SimplifiedAlbum
     external_ids: ExternalIds
-    popularity: number
+    popularity?: number
 }
 
 export interface Tracks {
@@ -234,15 +236,15 @@ export interface SimplifiedArtist {
     href: string
     id: string
     name: string
-    type: string
+    type: "artist"
     uri: string
 }
 
 export interface Artist extends SimplifiedArtist {
-    followers: Followers
+    followers?: Followers
     genres: string[]
     images: Image[]
-    popularity: number
+    popularity?: number
 }
 
 export interface Artists {
@@ -320,7 +322,7 @@ export interface Image {
 
 export interface SimplifiedAudiobook {
     authors: Author[]
-    available_markets: string[]
+    available_markets?: string[]
     copyrights: Copyright[]
     description: string
     edition: string
@@ -334,9 +336,9 @@ export interface SimplifiedAudiobook {
     media_type: string
     name: string
     narrators: Narrator[]
-    publisher: string
+    publisher?: string
     total_chapters: number
-    type: string
+    type: "audiobook"
     uri: string
 }
 
@@ -399,8 +401,8 @@ export interface SimplifiedChapter {
     release_date_precision: string
     resume_point: ResumePoint
     html_description: string
-    available_markets: Market[]
-    type: string
+    available_markets?: Market[]
+    type: "chapter"
     uri: string
     external_urls: ExternalUrls
     href: string
@@ -447,7 +449,7 @@ export interface SimplifiedEpisode {
     release_date: string
     release_date_precision: string
     resume_point: ResumePoint
-    type: string
+    type: "episode"
     uri: string
     restrictions: Restrictions
 }
@@ -462,7 +464,7 @@ export interface SavedEpisode {
 }
 
 export interface SimplifiedShow {
-    available_markets: string[]
+    available_markets?: string[]
     copyrights: Copyright[]
     description: string
     html_description: string
@@ -475,8 +477,8 @@ export interface SimplifiedShow {
     languages: string[]
     media_type: string
     name: string
-    publisher: string
-    type: string
+    publisher?: string
+    type: "show"
     uri: string
     total_episodes: number
 }
@@ -507,7 +509,7 @@ interface PlaylistBase {
     primary_color?: string | null
     public: boolean | null
     snapshot_id: string
-    type: string
+    type: "playlist"
     uri: string
 }
 
@@ -569,29 +571,29 @@ export interface UserReference {
     external_urls: ExternalUrls
     href: string
     id: string
-    type: string
+    type: "user"
     uri: string
 }
 
 export interface User {
     display_name: string
-    email: string
+    email?: string
     external_urls: ExternalUrls
-    followers: Followers
+    followers?: Followers
     href: string
     id: string
     images: Image[]
-    type: string
+    type: "user"
     uri: string
 }
 
 export interface UserProfile extends User {
-    country: string;
-    explicit_content: {
+    country?: string;
+    explicit_content?: {
         filter_enabled: boolean,
         filter_locked: boolean
     },
-    product: string;
+    product?: string;
 }
 
 export interface AudioFeatures {
@@ -606,7 +608,7 @@ export interface AudioFeatures {
     liveness: number
     valence: number
     tempo: number
-    type: string
+    type: "audio_features"
     id: string
     uri: string
     track_href: string

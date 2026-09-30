@@ -3,8 +3,8 @@ import EndpointsBase from './EndpointsBase.js';
 
 export default class AlbumsEndpoints extends EndpointsBase {
 
-    public async get(id: string, market?: Market): Promise<Album>;
-    public async get(ids: string[], market?: Market): Promise<Album[]>;
+    public async get(id: string, market?: Market): Promise<Album | null>;
+    public async get(ids: string[], market?: Market): Promise<Album[] | null>;
     public async get(idOrIds: string | string[], market?: Market) {
         if (typeof idOrIds === 'string') {
             const params = this.paramsFor({ market });
@@ -15,7 +15,7 @@ export default class AlbumsEndpoints extends EndpointsBase {
         const params = this.paramsFor({ ids: idOrIds, market });
         // TODO: only returns top 20, validate here
         const response = await this.getRequest<Albums>(`albums${params}`);
-        return response.albums;
+        return response === null ? null : response.albums;
     }
 
     public tracks(albumId: string, market?: Market, limit?: MaxInt<50>, offset?: number) {

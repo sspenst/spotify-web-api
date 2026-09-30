@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { assert, beforeEach, describe, expect, it } from "vitest";
 import { buildIntegrationTestSdkInstance } from "../test/SpotifyApiBuilder";
 import { validAudioBook } from "../test/data/validAudioBook";
 import { SpotifyApi } from "../SpotifyApi";
@@ -16,6 +16,7 @@ describe("Integration: Audiobooks Endpoints", () => {
     it("getAudiobook can return information", async () => {
         const item = validAudioBook();
         const result = await sut.audiobooks.get(item.id);
+        assert(result !== null);
 
         expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/audiobooks/${item.id}`);
         expect(result.id).toBe(item.id);
@@ -24,6 +25,7 @@ describe("Integration: Audiobooks Endpoints", () => {
     it("getAudiobooks can return multiple items at once", async () => {
         const item = validAudioBook();
         const result = await sut.audiobooks.get([item.id, item.id]);
+        assert(result !== null);
 
         expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/audiobooks?ids=${item.id}%2C${item.id}`);
         expect(result.length).toBe(2);
@@ -36,6 +38,7 @@ describe("Integration: Audiobooks Endpoints", () => {
         const chapters = validAudiobookChapters();
 
         const result = await sut.audiobooks.getAudiobookChapters(item.id);
+        assert(result !== null);
 
         expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/audiobooks/${item.id}/chapters`);
         expect(result.items.length).toBeGreaterThan(0);

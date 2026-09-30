@@ -5,8 +5,8 @@ import EndpointsBase from './EndpointsBase.js';
 export type ChapterMarket = "GB" | "US" | "IE" | "NZ" | "AU";
 
 export default class ChaptersEndpoints extends EndpointsBase {
-    public get(id: string, market: ChapterMarket): Promise<Chapter>;
-    public get(ids: string[], market: ChapterMarket): Promise<Chapter[]>;
+    public get(id: string, market: ChapterMarket): Promise<Chapter | null>;
+    public get(ids: string[], market: ChapterMarket): Promise<Chapter[] | null>;
     public async get(idOrIds: string | string[], market: ChapterMarket) {
         if (typeof idOrIds === 'string') {
             const params = this.paramsFor({ market });
@@ -16,6 +16,6 @@ export default class ChaptersEndpoints extends EndpointsBase {
         // TODO: Only returns top 50, validate / pre-check here
         const params = this.paramsFor({ ids: idOrIds, market });
         const response = await this.getRequest<Chapters>(`chapters${params}`);
-        return response.chapters;
+        return response === null ? null : response.chapters;
     }
 }

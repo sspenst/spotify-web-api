@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { assert, beforeEach, describe, expect, it } from "vitest";
 import { buildIntegrationTestSdkInstance } from "../test/SpotifyApiBuilder";
 import { SpotifyApi } from "../SpotifyApi";
 import { FetchApiSpy } from "../test/FetchApiSpy";
@@ -13,6 +13,7 @@ describe("Integration: Markets Endpoints", () => {
 
     it("getAvailableMarkets can return information", async () => {
         const result = await sut.markets.getAvailableMarkets();
+        assert(result !== null);
 
         expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/markets`);
         // Spotify adds markets; validate the contract instead of a historic list.

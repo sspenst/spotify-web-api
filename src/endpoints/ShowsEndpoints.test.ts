@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { assert, beforeEach, describe, expect, it } from "vitest";
 import { buildIntegrationTestSdkInstance } from "../test/SpotifyApiBuilder";
 import { SpotifyApi } from "../SpotifyApi";
 import { FetchApiSpy } from "../test/FetchApiSpy";
@@ -15,6 +15,7 @@ describe("Integration: Shows Endpoints", () => {
     it("getShow can return information", async () => {
         const valid = validShow();
         const result = await sut.shows.get(valid.id, "GB");
+        assert(result !== null);
 
         expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/shows/${valid.id}?market=GB`);
         expect(result.id).toBe(valid.id);
@@ -23,6 +24,7 @@ describe("Integration: Shows Endpoints", () => {
     it("getShows can return information", async () => {
         const valid = validShow();
         const result = await sut.shows.get([valid.id, valid.id], "GB");
+        assert(result !== null);
 
         expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/shows?ids=${valid.id}%2C${valid.id}&market=GB`);
         expect(result[0].id).toBe(valid.id);
@@ -32,6 +34,7 @@ describe("Integration: Shows Endpoints", () => {
     it("getShowEpisodes can return information", async () => {
         const valid = validShow();
         const result = await sut.shows.episodes(valid.id, "GB");
+        assert(result !== null);
 
         expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/shows/${valid.id}/episodes?market=GB`);
         expect(result.items.length).toBeGreaterThan(0);

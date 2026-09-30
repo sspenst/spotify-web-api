@@ -134,10 +134,10 @@ class CurrentUserPlaylistsEndpoints extends EndpointsBase {
         await this.deleteRequest(`me/library${params}`);
     }
 
-    public isFollowing(playlistId: string): Promise<boolean[]>;
+    public isFollowing(playlistId: string): Promise<boolean[] | null>;
     /** @deprecated Only the current user can be checked. Omit ids to use /me/library/contains. */
-    public isFollowing(playlistId: string, ids: string[]): Promise<boolean[]>;
-    public isFollowing(playlistId: string, ids?: string[]): Promise<boolean[]> {
+    public isFollowing(playlistId: string, ids: string[]): Promise<boolean[] | null>;
+    public isFollowing(playlistId: string, ids?: string[]): Promise<boolean[] | null> {
         if (ids === undefined) {
             const params = this.paramsFor({ uris: `spotify:playlist:${playlistId}` });
             return this.getRequest<boolean[]>(`me/library/contains${params}`);
@@ -153,14 +153,14 @@ class CurrentUserShowsEndpoints extends EndpointsBase {
         return this.getRequest<Page<SavedShow>>(`me/shows${params}`);
     }
 
-    public saveShows(ids: string[]) {
+    public async saveShows(ids: string[]) {
         const params = this.paramsFor({ ids });
-        return this.putRequest(`me/shows${params}`);
+        await this.putRequest(`me/shows${params}`);
     }
 
-    public removeSavedShows(ids: string[], market?: Market) {
+    public async removeSavedShows(ids: string[], market?: Market) {
         const params = this.paramsFor({ ids, market });
-        return this.deleteRequest(`me/shows${params}`);
+        await this.deleteRequest(`me/shows${params}`);
     }
 
     public hasSavedShow(ids: string[]) {

@@ -133,7 +133,7 @@ app.listen(3000, () => {
 ## Playlist APIs
 
 Playlist item methods use Spotify's current `/playlists/{id}/items` endpoints. Both
-`addItemsToPlaylist` and `removeItemsFromPlaylist` return `{ snapshot_id }`.
+`addItemsToPlaylist` and `removeItemsFromPlaylist` return `{ snapshot_id } | null`.
 Create playlists for the authenticated user without passing a user ID:
 
 ```ts
@@ -142,8 +142,11 @@ const playlist = await sdk.currentUser.playlists.createPlaylist({
     public: false,
 });
 // Also available as sdk.playlists.createPlaylist({ name: "My playlist" }).
+if (playlist === null) throw new Error("No playlist returned");
 const added = await sdk.playlists.addItemsToPlaylist(playlist.id, [trackUri]);
+if (added === null) throw new Error("No snapshot returned");
 const page = await sdk.playlists.getPlaylistItems(playlist.id);
+if (page === null) throw new Error("No playlist items returned");
 for (const entry of page.items) {
     if (entry.item) console.log(entry.item.name);
 }
@@ -186,6 +189,21 @@ See Spotify's [playlist migration guide](https://developer.spotify.com/documenta
 [playlist items reference](https://developer.spotify.com/documentation/web-api/reference/get-playlists-items),
 [library save reference](https://developer.spotify.com/documentation/web-api/reference/save-library-items),
 and [cover upload reference](https://developer.spotify.com/documentation/web-api/reference/upload-custom-playlist-cover).
+
+## Response type migration
+
+Data-returning methods now return `Promise<T | null>`. Handle `null` before
+accessing a resource, page, search result, array, or playlist snapshot. See the
+[migration notes](docs/response-types-migration.md) for custom deserializers,
+optional fields, literal resource types, and the remaining response-type audit.
+
+```ts
+const album = await sdk.albums.get(albumId);
+if (album === null) {
+    throw new Error("No album returned; complete authentication or retry as appropriate.");
+}
+console.log(album.name, album.available_markets ?? []);
+```
 
 ## Playback APIs
 
@@ -283,7 +301,7 @@ You can override the default deserializer by passing in a class that implements 
 To implement your own, you need to provide an object with the following method signature:
 
 ```ts
-async deserialize<TReturnType>(response: Response): Promise<TReturnType> {
+async deserialize<TReturnType>(response: Response): Promise<TReturnType | null> {
     // Implement your custom deserialization logic here
 }
 ```

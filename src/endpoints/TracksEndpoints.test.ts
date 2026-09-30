@@ -1,5 +1,5 @@
 import { restrictedEndpointTest } from "../test/SpotifyApiBuilder.js";
-import { beforeEach, describe, expect, it } from "vitest";
+import { assert, beforeEach, describe, expect, it } from "vitest";
 import { buildIntegrationTestSdkInstance } from "../test/SpotifyApiBuilder";
 import { SpotifyApi } from "../SpotifyApi";
 import { FetchApiSpy } from "../test/FetchApiSpy";
@@ -16,6 +16,7 @@ describe("Integration: Tracks Endpoints", () => {
     it("getTrack can return information", async () => {
         const valid = validTrack();
         const result = await sut.tracks.get(valid.id);
+        assert(result !== null);
 
         expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/tracks/${valid.id}`);
         expect(result.id).toBe(valid.id);
@@ -24,6 +25,7 @@ describe("Integration: Tracks Endpoints", () => {
     it("getTracks can return multiple items", async () => {
         const valid = validTrack();
         const result = await sut.tracks.get([valid.id, valid.id]);
+        assert(result !== null);
 
         expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/tracks?ids=${valid.id}%2C${valid.id}`);
         expect(result[0].id).toBe(valid.id);
@@ -33,6 +35,7 @@ describe("Integration: Tracks Endpoints", () => {
     restrictedEndpointTest("audioFeatures can return information", async () => {
         const valid = validTrack();
         const result = await sut.tracks.audioFeatures(valid.id);
+        assert(result !== null);
 
         expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/audio-features/${valid.id}`);
         expect(result.id).toBe(valid.id);
@@ -41,6 +44,7 @@ describe("Integration: Tracks Endpoints", () => {
     restrictedEndpointTest("audioFeatures can return multiple items", async () => {
         const valid = validTrack();
         const result = await sut.tracks.audioFeatures([valid.id, valid.id]);
+        assert(result !== null);
 
         expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/audio-features?ids=${valid.id}%2C${valid.id}`);
         expect(result[0].id).toBe(valid.id);
@@ -50,6 +54,7 @@ describe("Integration: Tracks Endpoints", () => {
     restrictedEndpointTest("audioAnalysis can return information", async () => {
         const valid = validTrack();
         const result = await sut.tracks.audioAnalysis(valid.id);
+        assert(result !== null);
 
         expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/audio-analysis/${valid.id}`);
         expect(result.track.tempo).toBeGreaterThan(0);

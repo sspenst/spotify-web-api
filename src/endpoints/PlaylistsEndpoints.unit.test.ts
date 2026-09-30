@@ -35,8 +35,8 @@ describe("Playlist API contracts", () => {
         const result = await sdk.playlists.getPlaylist("playlist", "CA", "name,items.items(item(name))", ["track", "episode"]);
         request("GET", "playlists/playlist?market=CA&fields=name%2Citems.items%28item%28name%29%29&additional_types=track%2Cepisode");
         expect(result).toEqual(metadata);
-        expect(result.items).toBeUndefined();
-        expectTypeOf(result).toEqualTypeOf<Playlist<Track | Episode>>();
+        expect(result?.items).toBeUndefined();
+        expectTypeOf(result).toEqualTypeOf<Playlist<Track | Episode> | null>();
     });
 
     it("returns modern playlist items and allows unavailable entries", async () => {
@@ -46,20 +46,20 @@ describe("Playlist API contracts", () => {
         const result = await sdk.playlists.getPlaylistItems("playlist", "CA", "items(item),total", 50, 0, ["episode"]);
         request("GET", "playlists/playlist/items?market=CA&fields=items%28item%29%2Ctotal&limit=50&offset=0&additional_types=episode");
         expect(result).toEqual(page);
-        expectTypeOf(result).toEqualTypeOf<Page<PlaylistedItem<Track | Episode>>>();
+        expectTypeOf(result).toEqualTypeOf<Page<PlaylistedItem<Track | Episode>> | null>();
     });
 
     it("omits unspecified playlist-item query parameters", async () => {
         const result = await sdk.playlists.getPlaylistItems("playlist");
         request("GET", "playlists/playlist/items");
-        expectTypeOf(result).toEqualTypeOf<Page<PlaylistedItem<Track>>>();
+        expectTypeOf(result).toEqualTypeOf<Page<PlaylistedItem<Track>> | null>();
     });
 
     it("adds mixed URIs at position zero and returns the snapshot", async () => {
         const result = await sdk.playlists.addItemsToPlaylist("playlist", uris, 0);
         request("POST", "playlists/playlist/items", { position: 0, uris });
         expect(result).toEqual(snapshot);
-        expectTypeOf(result).toEqualTypeOf<SnapshotReference>();
+        expectTypeOf(result).toEqualTypeOf<SnapshotReference | null>();
     });
 
     it("appends items when no position is specified", async () => {
@@ -74,7 +74,7 @@ describe("Playlist API contracts", () => {
             : { tracks: entries, snapshot_id: "old-version" });
         request("DELETE", "playlists/playlist/items", { items: entries, snapshot_id: "old-version" });
         expect(result).toEqual(snapshot);
-        expectTypeOf(result).toEqualTypeOf<SnapshotReference>();
+        expectTypeOf(result).toEqualTypeOf<SnapshotReference | null>();
     });
 
     it.each([{ label: "replaces", replacement: ["spotify:track:one", "spotify:episode:two"] },

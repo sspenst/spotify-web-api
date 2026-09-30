@@ -3,8 +3,8 @@ import EndpointsBase from './EndpointsBase.js';
 
 export default class EpisodesEndpoints extends EndpointsBase {
 
-    public get(id: string, market: Market): Promise<Episode>
-    public get(ids: string[], market: Market): Promise<Episode[]>
+    public get(id: string, market: Market): Promise<Episode | null>
+    public get(ids: string[], market: Market): Promise<Episode[] | null>
     public async get(idOrIds: string | string[], market: Market) {
         if (typeof idOrIds === 'string') {
             const params = this.paramsFor({ market });
@@ -13,6 +13,6 @@ export default class EpisodesEndpoints extends EndpointsBase {
 
         const params = this.paramsFor({ ids: idOrIds, market });
         const response = await this.getRequest<Episodes>(`episodes${params}`);
-        return response.episodes;
+        return response === null ? null : response.episodes;
     }
 }

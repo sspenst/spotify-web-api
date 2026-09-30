@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { assert, beforeEach, describe, expect, it } from "vitest";
 import { buildIntegrationTestSdkInstance } from "../test/SpotifyApiBuilder";
 import { validAlbumTracksResult } from "../test/data/validAlbumTracksResult";
 import { validAlbumResult } from "../test/data/validAlbumResult";
@@ -16,6 +16,7 @@ describe("Integration: Albums Endpoints", () => {
     it("getAlbum can return information for valid album", async () => {
         const item = validAlbumResult();
         const result = await sut.albums.get(item.id);
+        assert(result !== null);
 
         expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/albums/${item.id}`);
         expect(result.name).toBe(item.name);
@@ -24,6 +25,7 @@ describe("Integration: Albums Endpoints", () => {
     it("getAlbums can return multiple items at once", async () => {
         const item = validAlbumResult();
         const result = await sut.albums.get([item.id, item.id]);
+        assert(result !== null);
 
         expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/albums?ids=${item.id}%2C${item.id}`);
         expect(result.length).toBe(2);
@@ -34,6 +36,7 @@ describe("Integration: Albums Endpoints", () => {
     it("getAlbumTracks returns correct tracks for valid album", async () => {
         const item = validAlbumResult();
         const result = await sut.albums.tracks(item.id);
+        assert(result !== null);
 
         expect(result.items.length).toBe(validAlbumTracksResult().items.length);
     });

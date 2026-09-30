@@ -1,5 +1,5 @@
 import { restrictedEndpointTest } from "../test/SpotifyApiBuilder.js";
-import { beforeEach, describe, expect, it } from "vitest";
+import { assert, beforeEach, describe, expect, it } from "vitest";
 import { buildIntegrationTestSdkInstance } from "../test/SpotifyApiBuilder";
 import { SpotifyApi } from "../SpotifyApi";
 import { FetchApiSpy } from "../test/FetchApiSpy";
@@ -15,6 +15,7 @@ describe("Integration: Browse Categories Endpoints", () => {
 
     it("getCategories can return information", async () => {
         const result = await sut.browse.getCategories();
+        assert(result !== null);
 
         expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/browse/categories`);
         expect(result.categories.items.length).toBeGreaterThan(0);
@@ -24,6 +25,7 @@ describe("Integration: Browse Categories Endpoints", () => {
         const valid = validCategory();
 
         const result = await sut.browse.getCategory(valid.id);
+        assert(result !== null);
 
         expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/browse/categories/${valid.id}`);
         // Use the canonical category ID; labels and artwork are mutable catalog data.
@@ -42,6 +44,7 @@ describe("Integration: Browse Categories Endpoints", () => {
     restrictedEndpointTest("getCategorysPlaylists returns playlists", async () => {
         const valid = validCategory();
         const result = await sut.browse.getPlaylistsForCategory(valid.id);
+        assert(result !== null);
 
         expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/browse/categories/${valid.id}/playlists`);
         expect(result.playlists.items.length).toBeGreaterThan(0);
@@ -49,6 +52,7 @@ describe("Integration: Browse Categories Endpoints", () => {
 
     it("getNewReleases returns some new releases", async () => {
         const result = await sut.browse.getNewReleases();
+        assert(result !== null);
         expect(result.albums.items.length).toBeGreaterThan(0);
     });
 });

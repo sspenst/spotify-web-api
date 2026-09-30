@@ -1,0 +1,10 @@
+{
+    "extends": "./tsconfig.mjs.json",
+    "include": ["./src/**/*.test.ts"],
+    "exclude": [],
+    "compilerOptions": {
+        "moduleResolution": "Bundler",
+        "noEmit": true,
+        "declaration": false
+    }
+}

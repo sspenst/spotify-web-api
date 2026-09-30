@@ -1,4 +1,4 @@
-import { beforeAll, describe, expect, it } from "vitest";
+import { assert, beforeAll, describe, expect, it } from "vitest";
 import { buildIntegrationTestUserSdkInstance } from "../test/SpotifyApiBuilder";
 import { SpotifyApi } from "../SpotifyApi";
 import { FetchApiSpy } from "../test/FetchApiSpy";
@@ -12,7 +12,9 @@ describe("Integration: Playlists Endpoints", () => {
     beforeAll(async () => {
         [sut, fetchSpy] = buildIntegrationTestUserSdkInstance();
         const me = await sut.currentUser.profile();
+        assert(me !== null);
         const playlists = await sut.currentUser.playlists.playlists(50);
+        assert(playlists !== null);
         const ownedPlaylist = playlists.items.find(playlist => playlist.owner.id === me.id);
         if (!ownedPlaylist) {
             throw new Error("Playlist integration tests require a playlist owned by the authenticated user among the first 50 playlists.");
@@ -22,6 +24,7 @@ describe("Integration: Playlists Endpoints", () => {
 
     it("getPlaylist can return information", async () => {
         const result = await sut.playlists.getPlaylist(playlistId);
+        assert(result !== null);
 
         expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/playlists/${playlistId}`);
         expect(result.items).toBeDefined();
@@ -29,6 +32,7 @@ describe("Integration: Playlists Endpoints", () => {
 
     it("getPlaylist can return information with additional_types", async () => {
         const result = await sut.playlists.getPlaylist(playlistId, undefined, undefined, ['episode']);
+        assert(result !== null);
 
         expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/playlists/${playlistId}?additional_types=episode`);
         expect(result.items).toBeDefined();
@@ -36,6 +40,7 @@ describe("Integration: Playlists Endpoints", () => {
 
     it("getPlaylistItems can return information", async () => {
         const result = await sut.playlists.getPlaylistItems(playlistId);
+        assert(result !== null);
 
         expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/playlists/${playlistId}/items`);
         expect(Array.isArray(result.items)).toBe(true);
@@ -43,6 +48,7 @@ describe("Integration: Playlists Endpoints", () => {
 
     it("getPlaylistItems can return information with additional_types", async () => {
         const result = await sut.playlists.getPlaylistItems(playlistId, undefined, undefined, 1, 0, ['episode']);
+        assert(result !== null);
 
         expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/playlists/${playlistId}/items?limit=1&offset=0&additional_types=episode`);
         expect(Array.isArray(result.items)).toBe(true);
@@ -51,6 +57,7 @@ describe("Integration: Playlists Endpoints", () => {
     it("getUsersPlaylists can return information", async () => {
         const valid = validUser();
         const result = await sut.playlists.getUsersPlaylists(valid.id);
+        assert(result !== null);
 
         expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/users/${valid.id}/playlists`);
         expect(Array.isArray(result.items)).toBe(true);

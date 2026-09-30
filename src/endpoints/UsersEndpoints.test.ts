@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { assert, beforeEach, describe, expect, it } from "vitest";
 import { buildIntegrationTestSdkInstance } from "../test/SpotifyApiBuilder";
 import { SpotifyApi } from "../SpotifyApi";
 import { FetchApiSpy } from "../test/FetchApiSpy";
@@ -15,6 +15,7 @@ describe("Integration: Users Endpoints", () => {
     it("getUserProfile can return information", async () => {
         const valid = validUser();
         const result = await sut.users.profile(valid.id);
+        assert(result !== null);
 
         expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/users/${valid.id}`);
         expect(result.id).toBe(valid.id);

@@ -51,10 +51,10 @@ export default class PlaylistsEndpoints extends EndpointsBase {
         return this.getRequest<Page<SimplifiedPlaylist>>(`users/${user_id}/playlists${params}`);
     }
 
-    public createPlaylist(request: CreatePlaylistRequest): Promise<Playlist>;
+    public createPlaylist(request: CreatePlaylistRequest): Promise<Playlist | null>;
     /** @deprecated Use createPlaylist(request) for POST /me/playlists. The user-specific endpoint is unavailable in Development mode. */
-    public createPlaylist(user_id: string, request: CreatePlaylistRequest): Promise<Playlist>;
-    public createPlaylist(userOrRequest: string | CreatePlaylistRequest, request?: CreatePlaylistRequest): Promise<Playlist> {
+    public createPlaylist(user_id: string, request: CreatePlaylistRequest): Promise<Playlist | null>;
+    public createPlaylist(userOrRequest: string | CreatePlaylistRequest, request?: CreatePlaylistRequest): Promise<Playlist | null> {
         if (typeof userOrRequest === "string") {
             return this.postRequest<Playlist>(`users/${userOrRequest}/playlists`, request);
         }

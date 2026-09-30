@@ -1,5 +1,5 @@
 import { restrictedEndpointTest } from "../test/SpotifyApiBuilder.js";
-import { beforeEach, describe, expect, it } from "vitest";
+import { assert, beforeEach, describe, expect, it } from "vitest";
 import { buildIntegrationTestSdkInstance } from "../test/SpotifyApiBuilder";
 import { validArtist } from "../test/data/validArtist";
 import { SpotifyApi } from "../SpotifyApi";
@@ -16,6 +16,7 @@ describe("Integration: Artists Endpoints", () => {
     it("getArtist can return information", async () => {
         const valid = validArtist();
         const result = await sut.artists.get(valid.id);
+        assert(result !== null);
 
         expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/artists/${valid.id}`);
         expect(result.name).toBe(valid.name);
@@ -24,6 +25,7 @@ describe("Integration: Artists Endpoints", () => {
     it("getArtists can return multiple items", async () => {
         const valid = validArtist();
         const result = await sut.artists.get([valid.id, valid.id]);
+        assert(result !== null);
 
         expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/artists?ids=${valid.id}%2C${valid.id}`);
         expect(result.length).toBe(2);
@@ -34,6 +36,7 @@ describe("Integration: Artists Endpoints", () => {
     it("getArtistAlbums can return information", async () => {
         const valid = validArtist();
         const result = await sut.artists.albums(valid.id);
+        assert(result !== null);
 
         expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/artists/${valid.id}/albums`);
         expect(result.items.length).toBeGreaterThan(0);
@@ -42,6 +45,7 @@ describe("Integration: Artists Endpoints", () => {
     it("getArtistTopTracks can return information", async () => {
         const valid = validArtist();
         const result = await sut.artists.topTracks(valid.id, "GB");
+        assert(result !== null);
 
         expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/artists/${valid.id}/top-tracks?market=GB`);
         expect(result.tracks.length).toBeGreaterThan(0);
@@ -50,6 +54,7 @@ describe("Integration: Artists Endpoints", () => {
     restrictedEndpointTest("getArtistRelatedArtists can return information", async () => {
         const valid = validArtist();
         const result = await sut.artists.relatedArtists(valid.id);
+        assert(result !== null);
 
         expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/artists/${valid.id}/related-artists`);
         expect(result.artists.length).toBeGreaterThan(0);

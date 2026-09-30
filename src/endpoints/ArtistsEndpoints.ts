@@ -11,8 +11,8 @@ import type {
 import EndpointsBase from "./EndpointsBase.js";
 
 export default class ArtistsEndpoints extends EndpointsBase {
-    public async get(id: string): Promise<Artist>;
-    public async get(ids: string[]): Promise<Artist[]>;
+    public async get(id: string): Promise<Artist | null>;
+    public async get(ids: string[]): Promise<Artist[] | null>;
     public async get(idOrIds: string | string[]) {
         if (typeof idOrIds === "string") {
             const artist = this.getRequest<Artist>(`artists/${idOrIds}`);
@@ -21,7 +21,7 @@ export default class ArtistsEndpoints extends EndpointsBase {
 
         const params = this.paramsFor({ ids: idOrIds });
         const response = await this.getRequest<Artists>(`artists${params}`);
-        return response.artists;
+        return response === null ? null : response.artists;
     }
 
     public albums(
