@@ -10,7 +10,7 @@ import { validShow } from "../test/data/validShow";
 import { validEpisode } from "../test/data/validEpisode";
 import { validTrack } from "../test/data/validTrack";
 
-describe("Integration: Users Endpoints (logged in user)", () => {
+describe("Integration: Users Endpoints (logged in user)", { timeout: 20000 }, () => {
     let sut: SpotifyApi;
     let fetchSpy: FetchApiSpy;
 
@@ -328,9 +328,7 @@ describe("Integration: Users Endpoints (logged in user)", () => {
 
     // playlists
     it("create and modify playlists for a user works", async () => {
-        const me = await sut.currentUser.profile();
-
-        const result = await sut.playlists.createPlaylist(me.id, {
+        const result = await sut.currentUser.playlists.createPlaylist({
             name: "test playlist name!",
             description: "test playlist description!"
         });
@@ -347,17 +345,17 @@ describe("Integration: Users Endpoints (logged in user)", () => {
         const snapshotUpdated = await sut.playlists.movePlaylistItems(result.id, 3, 1, 0); // Move last track to start
 
         let playlist = await sut.playlists.getPlaylist(result.id);
-        expect(playlist.tracks.items.length).toBe(4);
-        expect(playlist.tracks.items[0].track.id).toBe(otherTrackId);
-        expect(playlist.tracks.items[1].track.id).toBe(validTrack.id);
+        expect(playlist.items!.items.length).toBe(4);
+        expect(playlist.items!.items[0].item?.id).toBe(otherTrackId);
+        expect(playlist.items!.items[1].item?.id).toBe(validTrack.id);
 
         await sut.playlists.removeItemsFromPlaylist(result.id, {
             snapshot_id: snapshotUpdated.snapshot_id,
-            tracks: [{ uri: validTrack.uri }]
+            items: [{ uri: validTrack.uri }]
         });
 
         const playlistWithoutTracks = await sut.playlists.getPlaylist(result.id);
-        expect(playlistWithoutTracks.tracks.items.length).toBe(1);
+        expect(playlistWithoutTracks.items!.items.length).toBe(1);
 
         await sut.playlists.changePlaylistDetails(result.id, {
             name: "test playlist name 2",
@@ -394,4 +392,4 @@ describe("Integration: Users Endpoints (logged in user)", () => {
         expect(result.playlists.items.length).toBeGreaterThan(0);
     });
 
-}, { timeout: 20000 });
+});

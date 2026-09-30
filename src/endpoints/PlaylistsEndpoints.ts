@@ -1,4 +1,4 @@
-import type { Market, Playlist, MaxInt, Page, Track, SnapshotReference, Image, PlaylistedTrack, QueryAdditionalTypes, TrackItem } from '../types.js';
+import type { Market, Playlist, MaxInt, Page, Track, SnapshotReference, Image, PlaylistedItem, QueryAdditionalTypes, TrackItem, SimplifiedPlaylist, ChangePlaylistDetailsRequest, CreatePlaylistRequest, UpdatePlaylistItemsRequest, RemovePlaylistItemsRequest } from '../types.js';
 import EndpointsBase from './EndpointsBase.js';
 
 export default class PlaylistsEndpoints extends EndpointsBase {
@@ -16,40 +16,49 @@ export default class PlaylistsEndpoints extends EndpointsBase {
     ) {
         // TODO: better support for fields
         const params = this.paramsFor({ market, fields, limit, offset, additional_types: additional_types?.join(',') });
-        return this.getRequest<Page<PlaylistedTrack<AdditionalTypes extends undefined ? Track : TrackItem>>>(`playlists/${playlist_id}/tracks${params}`);
+        return this.getRequest<Page<PlaylistedItem<AdditionalTypes extends undefined ? Track : TrackItem>>>(`playlists/${playlist_id}/items${params}`);
     }
 
     public async changePlaylistDetails(playlist_id: string, request: ChangePlaylistDetailsRequest) {
         await this.putRequest(`playlists/${playlist_id}`, request);
     }
 
-    public movePlaylistItems(playlist_id: string, range_start: number, range_length: number, moveToPosition: number) {
+    public movePlaylistItems(playlist_id: string, range_start: number, range_length: number, moveToPosition: number, snapshot_id?: string) {
         return this.updatePlaylistItems(playlist_id, {
             range_start,
             range_length,
-            insert_before: moveToPosition
+            insert_before: moveToPosition,
+            snapshot_id
         });
     }
 
     public updatePlaylistItems(playlist_id: string, request: UpdatePlaylistItemsRequest) {
-        return this.putRequest<SnapshotReference>(`playlists/${playlist_id}/tracks`, request);
+        return this.putRequest<SnapshotReference>(`playlists/${playlist_id}/items`, request);
     }
 
-    public async addItemsToPlaylist(playlist_id: string, uris?: string[], position?: number) {
-        await this.postRequest(`playlists/${playlist_id}/tracks`, { position, uris: uris });
+    public addItemsToPlaylist(playlist_id: string, uris?: string[], position?: number) {
+        return this.postRequest<SnapshotReference>(`playlists/${playlist_id}/items`, { position, uris });
     }
 
-    public async removeItemsFromPlaylist(playlist_id: string, request: RemovePlaylistItemsRequest) {
-        await this.deleteRequest(`playlists/${playlist_id}/tracks`, request);
+    public removeItemsFromPlaylist(playlist_id: string, request: RemovePlaylistItemsRequest) {
+        const items = request.items ?? request.tracks;
+        return this.deleteRequest<SnapshotReference>(`playlists/${playlist_id}/items`, { items, snapshot_id: request.snapshot_id });
     }
 
+    /** @deprecated Unavailable in Development mode. Use currentUser.playlists.playlists(). */
     public getUsersPlaylists(user_id: string, limit?: MaxInt<50>, offset?: number) {
         const params = this.paramsFor({ limit, offset });
-        return this.getRequest<Page<Playlist>>(`users/${user_id}/playlists${params}`);
+        return this.getRequest<Page<SimplifiedPlaylist>>(`users/${user_id}/playlists${params}`);
     }
 
-    public createPlaylist(user_id: string, request: CreatePlaylistRequest) {
-        return this.postRequest<Playlist>(`users/${user_id}/playlists`, request);
+    public createPlaylist(request: CreatePlaylistRequest): Promise<Playlist>;
+    /** @deprecated Use createPlaylist(request) for POST /me/playlists. The user-specific endpoint is unavailable in Development mode. */
+    public createPlaylist(user_id: string, request: CreatePlaylistRequest): Promise<Playlist>;
+    public createPlaylist(userOrRequest: string | CreatePlaylistRequest, request?: CreatePlaylistRequest): Promise<Playlist> {
+        if (typeof userOrRequest === "string") {
+            return this.postRequest<Playlist>(`users/${userOrRequest}/playlists`, request);
+        }
+        return this.postRequest<Playlist>("me/playlists", userOrRequest);
     }
 
     public getPlaylistCoverImage(playlist_id: string) {
@@ -59,11 +68,13 @@ export default class PlaylistsEndpoints extends EndpointsBase {
     public async addCustomPlaylistCoverImage(playlist_id: string, imageData: Buffer | HTMLImageElement | HTMLCanvasElement | string) {
         let base64EncodedJpeg: string = "";
 
-        if (imageData instanceof Buffer) {
+        if (typeof imageData === "string") {
+            base64EncodedJpeg = imageData;
+        } else if (typeof Buffer !== "undefined" && Buffer.isBuffer(imageData)) {
             base64EncodedJpeg = imageData.toString("base64");
-        } else if (imageData instanceof HTMLCanvasElement) {
+        } else if (typeof HTMLCanvasElement !== "undefined" && imageData instanceof HTMLCanvasElement) {
             base64EncodedJpeg = imageData.toDataURL("image/jpeg").split(';base64,')[1];
-        } else if (imageData instanceof HTMLImageElement) {
+        } else if (typeof HTMLImageElement !== "undefined" && imageData instanceof HTMLImageElement) {
             const canvas = document.createElement("canvas");
             canvas.width = imageData.width;
             canvas.height = imageData.height;
@@ -73,8 +84,6 @@ export default class PlaylistsEndpoints extends EndpointsBase {
             }
             ctx.drawImage(imageData, 0, 0);
             base64EncodedJpeg = canvas.toDataURL("image/jpeg").split(';base64,')[1];
-        } else if (typeof imageData === "string") {
-            base64EncodedJpeg = imageData;
         } else {
             throw new Error("ImageData must be a Buffer, HTMLImageElement, HTMLCanvasElement, or string containing a base64 encoded jpeg");
         }
@@ -85,32 +94,4 @@ export default class PlaylistsEndpoints extends EndpointsBase {
     public async addCustomPlaylistCoverImageFromBase64String(playlist_id: string, base64EncodedJpeg: string) {
         await this.putRequest(`playlists/${playlist_id}/images`, base64EncodedJpeg, "image/jpeg");
     }
-}
-
-interface RemovePlaylistItemsRequest {
-    tracks: Array<{ uri: string }>;
-    snapshot_id?: string;
-}
-
-interface UpdatePlaylistItemsRequest {
-    uris?: string[];
-    range_start?: number;
-    insert_before?: number;
-    range_length?: number;
-    snapshot_id?: string;
-}
-
-interface ChangePlaylistDetailsRequest {
-    name?: string;
-    public?: boolean;
-    collaborative?: boolean;
-    description?: string;
-}
-
-// TODO: deduplicate this from above
-interface CreatePlaylistRequest {
-    name: string;
-    public?: boolean;
-    collaborative?: boolean;
-    description?: string;
 }

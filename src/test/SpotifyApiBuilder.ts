@@ -52,7 +52,7 @@ export function buildIntegrationTestUserSdkInstance(): [SpotifyApi, FetchApiSpy]
     // Create an expired token so it gets refreshed immediately with the refresh token
     const expiredToken: AccessToken = {
         access_token: accessToken,
-        expires: Date.now() + 3600 * 1000,
+        expires: Date.now() - 1,
         expires_in: 3600,
         refresh_token: refreshToken,
         token_type: 'Bearer',
