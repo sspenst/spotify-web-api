@@ -16,7 +16,7 @@
     "build:win": "npm run build:cjs-win && npm run build:mjs-win",
     "build:mjs-win": "tsc --project tsconfig.mjs.json && xcopy .\\res\\package.mjs.json .\\dist\\mjs\\package.json /-I /Y",
     "build:cjs-win": "tsc --project tsconfig.cjs.json && xcopy .\\res\\package.cjs.json .\\dist\\cjs\\package.json /-I /Y",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "exports": {
     "import": "./dist/mjs/index.js",
@@ -29,17 +29,17 @@
   "author": "Spencer Spenst",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@commitlint/cli": "^20.1.0",
-    "@commitlint/config-conventional": "^20.0.0",
-    "@commitlint/cz-commitlint": "^20.1.0",
-    "@semantic-release/changelog": "^6.0.3",
-    "@semantic-release/git": "^10.0.1",
-    "@types/node": "^24.10.1",
-    "commitizen": "^4.3.1",
-    "dotenv": "^17.2.3",
-    "husky": "^8.0.3",
-    "jsdom": "^27.2.0",
-    "semantic-release": "^24.2.9",
+    "@commitlint/cli": "^21.2.3",
+    "@commitlint/config-conventional": "^21.2.3",
+    "@commitlint/cz-commitlint": "^21.2.3",
+    "@semantic-release/changelog": "^7.0.0",
+    "@semantic-release/git": "^11.0.1",
+    "@types/node": "^26.6.3",
+    "commitizen": "^4.3.2",
+    "dotenv": "^17.4.2",
+    "husky": "^9.1.7",
+    "jsdom": "^27.4.0",
+    "semantic-release": "^25.0.9",
     "typescript": "^5.9.3",
     "vite": "^7.2.4",
     "vitest": "^4.0.14"
@@ -59,5 +59,9 @@
       "vitest"
     ],
     "trace": true
+  },
+  "allowScripts": {
+    "fsevents@2.3.3": true,
+    "esbuild@0.25.12": true
   }
 }
