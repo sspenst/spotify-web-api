@@ -80,7 +80,7 @@ export type {
     RecommendationSeed,
 } from './endpoints/RecommendationsEndpoints';
 
-export type QueryAdditionalTypes = ['episode'];
+export type QueryAdditionalTypes = readonly ('track' | 'episode')[];
 export type TrackItem = Track | Episode;
 
 export interface AccessToken {
@@ -155,11 +155,19 @@ export interface Page<TItemType> {
 }
 
 export interface PlaylistedTrack<Item extends TrackItem = TrackItem> {
-    added_at: string
-    added_by: AddedBy
+    added_at: string | null
+    added_by: AddedBy | null
     is_local: boolean
-    primary_color: string
-    track: Item
+    primary_color?: string | null
+    track: Item | null
+}
+
+/** An entry returned by the current /playlists/{id}/items endpoint. */
+export interface PlaylistedItem<Item extends TrackItem = TrackItem> {
+    added_at: string | null
+    added_by: AddedBy | null
+    is_local: boolean
+    item: Item | null
 }
 
 export interface AddedBy {
@@ -488,23 +496,26 @@ export interface SnapshotReference {
 
 interface PlaylistBase {
     collaborative: boolean
-    description: string
+    description: string | null
     external_urls: ExternalUrls
-    followers: Followers
+    followers?: Followers
     href: string
     id: string
     images: Image[]
     name: string
     owner: UserReference
-    primary_color: string
-    public: boolean
+    primary_color?: string | null
+    public: boolean | null
     snapshot_id: string
     type: string
     uri: string
 }
 
 export interface Playlist<Item extends TrackItem = TrackItem> extends PlaylistBase {
-    tracks: Page<PlaylistedTrack<Item>>
+    /** Only present for playlists the current user owns or collaborates on. */
+    items?: Page<PlaylistedItem<Item>>
+    /** @deprecated Legacy response field. Current responses use items. */
+    tracks?: Page<PlaylistedTrack<Item>>
 }
 
 export interface FeaturedPlaylists {
@@ -513,8 +524,40 @@ export interface FeaturedPlaylists {
 }
 
 export interface SimplifiedPlaylist extends PlaylistBase {
-    tracks: TrackReference | null
+    items?: TrackReference | null
+    /** @deprecated Legacy response field. Current responses use items. */
+    tracks?: TrackReference | null
 }
+
+export interface ChangePlaylistDetailsRequest {
+    name?: string;
+    public?: boolean;
+    collaborative?: boolean;
+    description?: string;
+}
+
+export interface CreatePlaylistRequest extends ChangePlaylistDetailsRequest {
+    name: string;
+}
+
+export interface UpdatePlaylistItemsRequest {
+    uris?: string[];
+    range_start?: number;
+    insert_before?: number;
+    range_length?: number;
+    snapshot_id?: string;
+}
+
+export type RemovePlaylistItemsRequest = {
+    snapshot_id?: string;
+} & ({
+    items: Array<{ uri: string }>;
+    tracks?: never;
+} | {
+    /** @deprecated Use items. This field is translated to items before sending. */
+    tracks: Array<{ uri: string }>;
+    items?: never;
+});
 
 export interface TrackReference {
     href: string;
@@ -522,7 +565,7 @@ export interface TrackReference {
 }
 
 export interface UserReference {
-    display_name: string
+    display_name: string | null
     external_urls: ExternalUrls
     href: string
     id: string

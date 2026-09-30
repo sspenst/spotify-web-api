@@ -1,5 +1,5 @@
 import { SpotifyApi } from '../SpotifyApi.js';
-import type { Page, Artist, Track, MaxInt, FollowedArtists, Market, SavedAlbum, SimplifiedAudiobook, SimplifiedPlaylist, SavedEpisode, SavedShow, SavedTrack, UserProfile } from '../types.js';
+import type { Page, Artist, Track, MaxInt, FollowedArtists, Market, SavedAlbum, SimplifiedAudiobook, SimplifiedPlaylist, SavedEpisode, SavedShow, SavedTrack, UserProfile, CreatePlaylistRequest } from '../types.js';
 import EndpointsBase from './EndpointsBase.js';
 
 export default class CurrentUserEndpoints extends EndpointsBase {
@@ -115,20 +115,33 @@ class CurrentUserEpisodesEndpoints extends EndpointsBase {
 }
 
 class CurrentUserPlaylistsEndpoints extends EndpointsBase {
+    public createPlaylist(request: CreatePlaylistRequest) {
+        return this.api.playlists.createPlaylist(request);
+    }
+
     public playlists(limit?: MaxInt<50>, offset?: number) {
         const params = this.paramsFor({ limit, offset });
         return this.getRequest<Page<SimplifiedPlaylist>>(`me/playlists${params}`);
     }
 
     public async follow(playlist_id: string) {
-        await this.putRequest(`playlists/${playlist_id}/followers`);
+        const params = this.paramsFor({ uris: `spotify:playlist:${playlist_id}` });
+        await this.putRequest(`me/library${params}`);
     }
 
     public async unfollow(playlist_id: string) {
-        await this.deleteRequest(`playlists/${playlist_id}/followers`);
+        const params = this.paramsFor({ uris: `spotify:playlist:${playlist_id}` });
+        await this.deleteRequest(`me/library${params}`);
     }
 
-    public isFollowing(playlistId: string, ids: string[]) {
+    public isFollowing(playlistId: string): Promise<boolean[]>;
+    /** @deprecated Only the current user can be checked. Omit ids to use /me/library/contains. */
+    public isFollowing(playlistId: string, ids: string[]): Promise<boolean[]>;
+    public isFollowing(playlistId: string, ids?: string[]): Promise<boolean[]> {
+        if (ids === undefined) {
+            const params = this.paramsFor({ uris: `spotify:playlist:${playlistId}` });
+            return this.getRequest<boolean[]>(`me/library/contains${params}`);
+        }
         const params = this.paramsFor({ ids });
         return this.getRequest<boolean[]>(`playlists/${playlistId}/followers/contains${params}`)
     }

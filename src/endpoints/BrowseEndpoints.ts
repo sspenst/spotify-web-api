@@ -20,11 +20,13 @@ export default class BrowseEndpoints extends EndpointsBase {
         return this.getRequest<NewReleases>(`browse/new-releases${params}`);
     }
 
+    /** @deprecated Spotify restricts this endpoint for Development mode apps. */
     public getFeaturedPlaylists(country?: CountryCodeA2, locale?: string, timestamp?: string, limit?: MaxInt<50>, offset?: number) {
         const params = this.paramsFor({ country, locale, timestamp, limit, offset });
         return this.getRequest<FeaturedPlaylists>(`browse/featured-playlists${params}`);
     }
 
+    /** @deprecated Spotify restricts this endpoint for Development mode apps. */
     public getPlaylistsForCategory(category_id: string, country?: CountryCodeA2, limit?: MaxInt<50>, offset?: number) {
         const params = this.paramsFor({ country, limit, offset });
         return this.getRequest<FeaturedPlaylists>(`browse/categories/${category_id}/playlists${params}`);

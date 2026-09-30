@@ -130,6 +130,63 @@ app.listen(3000, () => {
 
 [Check out our blog post for more examples using ES Modules or CommonJS](https://developer.spotify.com/blog/2023-07-03-typescript-sdk)
 
+## Playlist APIs
+
+Playlist item methods use Spotify's current `/playlists/{id}/items` endpoints. Both
+`addItemsToPlaylist` and `removeItemsFromPlaylist` return `{ snapshot_id }`.
+Create playlists for the authenticated user without passing a user ID:
+
+```ts
+const playlist = await sdk.currentUser.playlists.createPlaylist({
+    name: "My playlist",
+    public: false,
+});
+// Also available as sdk.playlists.createPlaylist({ name: "My playlist" }).
+const added = await sdk.playlists.addItemsToPlaylist(playlist.id, [trackUri]);
+const page = await sdk.playlists.getPlaylistItems(playlist.id);
+for (const entry of page.items) {
+    if (entry.item) console.log(entry.item.name);
+}
+await sdk.playlists.removeItemsFromPlaylist(playlist.id, {
+    items: [{ uri: trackUri }],
+    snapshot_id: added.snapshot_id,
+});
+```
+
+Responses now expose `playlist.items` and `entry.item`, replacing `playlist.tracks`
+and `entry.track`. Playlist contents may be absent, and an entry's `item` may be
+null. Legacy response fields remain optional in the types; the SDK does not rename
+response fields. The old removal request `{ tracks: [...] }` is accepted and sent
+as `{ items: [...] }`.
+
+Use user authorization (PKCE or a provided user access token) for playlist
+operations. Client credentials do not grant access to a user's playlists or allow
+playlist creation. Request `playlist-modify-public` and/or `playlist-modify-private`
+for writes, `playlist-read-private` and `playlist-read-collaborative` as needed for
+reads, and `ugc-image-upload` for custom covers. Cover uploads accept a raw base64
+JPEG string, Buffer, browser canvas, or browser image; Spotify limits the payload
+to 256 KB.
+
+`currentUser.playlists.follow` and `unfollow` now use `/me/library` with a playlist
+URI. `isFollowing(playlistId)` uses `/me/library/contains` for the current user.
+Spotify documents `playlist-modify-public` for saving/removing playlists and
+`playlist-read-private` for checking saved playlists; obtain those scopes before
+using these calls. The overload `isFollowing(playlistId, ids)` retains the deprecated
+follower endpoint, which can only check the current user.
+
+Spotify restricts playlist-item access to playlists the user owns or collaborates
+on. Saving/following a playlist does not grant access to its items, so a 403 can be
+expected for other playlists. The user-specific creation overload, other users'
+playlist lists, and featured/category playlist methods remain available for older
+apps but are deprecated or unavailable in Development mode. Prefer
+`currentUser.playlists.playlists(limit, offset)` and follow the returned `next`
+page; the SDK passes through Spotify's `total` unchanged.
+
+See Spotify's [playlist migration guide](https://developer.spotify.com/documentation/web-api/tutorials/february-2026-migration-guide),
+[playlist items reference](https://developer.spotify.com/documentation/web-api/reference/get-playlists-items),
+[library save reference](https://developer.spotify.com/documentation/web-api/reference/save-library-items),
+and [cover upload reference](https://developer.spotify.com/documentation/web-api/reference/upload-custom-playlist-cover).
+
 ## Extensibility
 
 All of the constructors support a configuration object that lets you override the default behavior of the SDK.
