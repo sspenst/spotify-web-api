@@ -1,3 +1,4 @@
+import { restrictedEndpointTest } from "../test/SpotifyApiBuilder.js";
 import { beforeEach, describe, expect, it } from "vitest";
 import { buildIntegrationTestSdkInstance } from "../test/SpotifyApiBuilder";
 import { validArtist } from "../test/data/validArtist";
@@ -46,7 +47,7 @@ describe("Integration: Artists Endpoints", () => {
         expect(result.tracks.length).toBeGreaterThan(0);
     });
 
-    it("getArtistRelatedArtists can return information", async () => {
+    restrictedEndpointTest("getArtistRelatedArtists can return information", async () => {
         const valid = validArtist();
         const result = await sut.artists.relatedArtists(valid.id);
 

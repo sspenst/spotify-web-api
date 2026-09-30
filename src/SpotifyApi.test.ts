@@ -37,12 +37,12 @@ describe("SpotifyAPI Instance", () => {
             }).rejects.toThrowError("Bad or expired token");
         });
 
-        it("403 errors throw oAuth Error", async () => {
+        it("403 errors throw access denied Error", async () => {
             fetchMock.queueResponseBody(403, {});
 
             await expect(async () => {
                 await sut.albums.get("album-id-here");
-            }).rejects.toThrowError("Bad OAuth request");
+            }).rejects.toThrowError("Forbidden (403): access denied");
         });
 
         it("429 errors throw rate limit Error", async () => {

@@ -223,6 +223,6 @@ describe("Playlist API contracts", () => {
 
     it("propagates Spotify access errors", async () => {
         respond({ error: { status: 403 } }, 403);
-        await expect(sdk.playlists.getPlaylistItems("playlist")).rejects.toThrow("Bad OAuth request");
+        await expect(sdk.playlists.getPlaylistItems("playlist")).rejects.toThrow("Forbidden (403): access denied");
     });
 });

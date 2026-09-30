@@ -1,3 +1,4 @@
+import { restrictedEndpointTest } from "../test/SpotifyApiBuilder.js";
 import fs from "fs";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { buildIntegrationTestUserSdkInstance } from "../test/SpotifyApiBuilder";
@@ -375,16 +376,14 @@ describe("Integration: Users Endpoints (logged in user)", { timeout: 20000 }, ()
         expect(result.items.length).toBeGreaterThan(0);
     });
 
-    // TODO: deprecated
-    it("getFeaturedPlaylists returns playlists", async () => {
+    restrictedEndpointTest("getFeaturedPlaylists returns playlists", async () => {
         const result = await sut.browse.getFeaturedPlaylists();
 
         expect(fetchSpy.lastRequest().input).toBe("https://api.spotify.com/v1/browse/featured-playlists");
         expect(result.playlists.items.length).toBeGreaterThan(0);
     });
 
-    // TODO: deprecated
-    it("getCategorysPlaylists returns playlists", async () => {
+    restrictedEndpointTest("getCategorysPlaylists returns playlists", async () => {
         const category_id = "0JQ5DAqbMKFEC4WFtoNRpw";
         const result = await sut.browse.getPlaylistsForCategory(category_id);
 

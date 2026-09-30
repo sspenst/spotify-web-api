@@ -1,3 +1,4 @@
+import { it } from "vitest";
 import { SpotifyApi } from "../SpotifyApi";
 import ClientCredentialsStrategy from "../auth/ClientCredentialsStrategy";
 import FakeAuthStrategy from "./FakeAuthStrategy";
@@ -9,6 +10,13 @@ import InMemoryCachingStrategy from "../caching/InMemoryCachingStrategy";
 import dotenv from "dotenv";
 import { AccessToken, SdkOptions } from "../types";
 dotenv.config();
+
+// These deprecated endpoints are unavailable to most Development mode apps.
+// Opt in only with credentials entitled to them; HTTP failures still fail the test.
+// https://developer.spotify.com/blog/2024-11-27-changes-to-the-web-api
+export const restrictedEndpointTest = it.skipIf(
+    process.env.INTEGRATION_TESTS_ENABLE_RESTRICTED_ENDPOINTS !== "true"
+);
 
 export function buildIntegrationTestSdkInstance(): [SpotifyApi, FetchApiSpy] {
     // This should be replaced with a representative server-side auth flow

@@ -52,6 +52,7 @@ export default class ArtistsEndpoints extends EndpointsBase {
         );
     }
 
+    /** @deprecated Spotify restricts this endpoint for Development mode apps. */
     public relatedArtists(id: string) {
         return this.getRequest<Artists>(`artists/${id}/related-artists`);
     }

@@ -17,7 +17,9 @@ export default class TracksEndpoints extends EndpointsBase {
         return response.tracks;
     }
 
+    /** @deprecated Spotify restricts this endpoint for Development mode apps. */
     public audioFeatures(id: string): Promise<AudioFeatures>
+    /** @deprecated Spotify restricts this endpoint for Development mode apps. */
     public audioFeatures(ids: string[]): Promise<AudioFeatures[]>
     public async audioFeatures(idOrIds: string | string[]) {
         if (typeof idOrIds === 'string') {
@@ -28,6 +30,7 @@ export default class TracksEndpoints extends EndpointsBase {
         return response.audio_features;
     }
 
+    /** @deprecated Spotify restricts this endpoint for Development mode apps. */
     public audioAnalysis(id: string) {
         return this.getRequest<AudioAnalysis>(`audio-analysis/${id}`);
     }

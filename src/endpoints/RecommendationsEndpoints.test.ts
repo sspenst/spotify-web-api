@@ -1,10 +1,10 @@
+import { restrictedEndpointTest } from "../test/SpotifyApiBuilder.js";
 import { beforeEach, describe, expect, it } from "vitest";
 import { buildIntegrationTestSdkInstance } from "../test/SpotifyApiBuilder";
 import { SpotifyApi } from "../SpotifyApi";
 import { FetchApiSpy } from "../test/FetchApiSpy";
-import { validGenres } from "../test/data/validGenres";
 
-describe("Integration: Episodes Endpoints", () => {
+describe("Integration: Recommendations Endpoints", () => {
     let sut: SpotifyApi;
     let fetchSpy: FetchApiSpy;
 
@@ -12,15 +12,16 @@ describe("Integration: Episodes Endpoints", () => {
         [sut, fetchSpy] = buildIntegrationTestSdkInstance();
     });
 
-    it("getGenres can return information", async () => {
-        const valid = validGenres();
+    restrictedEndpointTest("getGenres can return information", async () => {
         const result = await sut.recommendations.genreSeeds();
 
         expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/recommendations/available-genre-seeds`);
-        expect(result).toStrictEqual(valid);
+        expect(result.genres.length).toBeGreaterThan(0);
+        expect(result.genres).toContain("rock");
+        for (const genre of result.genres) expect(genre).toEqual(expect.any(String));
     });
 
-    it("get can return recommendations", async () => {
+    restrictedEndpointTest("get can return recommendations", async () => {
         const result = await sut.recommendations.get({
             seed_artists: ["0oSGxfWSnnOXhD2fKuz2Gy"],
             seed_genres: ["rock"],

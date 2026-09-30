@@ -18,12 +18,28 @@ describe("Integration: Episodes Endpoints", () => {
 
         expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/episodes/${valid.id}?market=GB`);
 
-        // replace inconsistent properties
-        if (result.show) {
-            result.show.total_episodes = valid.show.total_episodes;
+        // Keep identity assertions; descriptions, previews, artwork and show counts
+        // are mutable catalog data, not a fixed response snapshot.
+        expect(result).toMatchObject({
+            id: valid.id, uri: valid.uri, type: "episode", href: valid.href,
+            release_date: valid.release_date, release_date_precision: valid.release_date_precision,
+            show: { id: valid.show.id, uri: valid.show.uri, type: "show" }
+        });
+        expect(result.name).toEqual(expect.any(String));
+        expect(result.name.length).toBeGreaterThan(0);
+        expect(result.description).toEqual(expect.any(String));
+        expect(result.html_description).toEqual(expect.any(String));
+        expect(result.duration_ms).toBeGreaterThan(0);
+        expect(result.explicit).toEqual(expect.any(Boolean));
+        expect(result.is_playable).toEqual(expect.any(Boolean));
+        expect(result.languages).toContain("en");
+        expect(result.images.length).toBeGreaterThan(0);
+        for (const image of result.images) expect(image.url).toMatch(/^https:\/\//);
+        if (result.audio_preview_url !== null) {
+            expect(result.audio_preview_url).toMatch(/^https:\/\//);
         }
-
-        expect(result).toStrictEqual(valid);
+        expect(Number.isInteger(result.show.total_episodes)).toBe(true);
+        expect(result.show.total_episodes).toBeGreaterThan(0);
     });
 
     it("getEpisodes can return multiple items at once", async () => {

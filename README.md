@@ -358,6 +358,31 @@ You can run the tests with `npm run test`, or using a plugin like [Wallaby](http
 
 We support `dotenv`, so you can add these to a `.env` file in the root of the repository.
 
+Nine live tests for related artists, recommendations/genre seeds, audio features/analysis,
+and featured/category playlists are skipped by default. Spotify [restricted these APIs
+in November 2024](https://developer.spotify.com/blog/2024-11-27-changes-to-the-web-api);
+[genre seeds are also deprecated](https://developer.spotify.com/documentation/web-api/reference/get-recommendation-genres).
+Set `INTEGRATION_TESTS_ENABLE_RESTRICTED_ENDPOINTS=true` only when your app has access
+(e.g. eligible existing Extended Quota Mode apps). This enables their original live
+success assertions; it does not accept 403/404 responses as success. Mocked contract
+tests always verify their URLs, query encoding, response handling, and error propagation.
+Missing credentials, errors on other live endpoints, and unexpected failures on opted-in
+tests still fail the suite.
+
+Live category and episode tests check identity and response structure rather than
+historic artwork, descriptions, preview URLs or show counts. The markets test checks
+unique country codes and known markets rather than an exact historic list. No live
+responses are overwritten to match fixtures.
+
+The full suite also requires access to legacy endpoints outside those nine tests.
+Spotify's [February 2026 Development Mode changes](https://developer.spotify.com/documentation/web-api/references/changes/february-2026)
+remove additional endpoints, including bulk catalog reads, browse categories, markets,
+artist top tracks and user profile reads, and replace legacy library writes/checks.
+A passing run with one app's credentials does not establish access for every app mode.
+Those tests remain enabled to expose compatibility gaps rather than silently accepting
+access errors. User integration tests modify the authorized account's library/playlists.
+
+
 To run the embedded example app, you will need to add the following environment variables:
 
 - `VITE_SPOTIFY_CLIENT_ID`=the same value as set in INTEGRATION_TESTS_SPOTIFY_CLIENT_ID

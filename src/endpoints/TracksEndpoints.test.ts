@@ -1,3 +1,4 @@
+import { restrictedEndpointTest } from "../test/SpotifyApiBuilder.js";
 import { beforeEach, describe, expect, it } from "vitest";
 import { buildIntegrationTestSdkInstance } from "../test/SpotifyApiBuilder";
 import { SpotifyApi } from "../SpotifyApi";
@@ -29,7 +30,7 @@ describe("Integration: Tracks Endpoints", () => {
         expect(result[1].id).toBe(valid.id);
     });
 
-    it("audioFeatures can return information", async () => {
+    restrictedEndpointTest("audioFeatures can return information", async () => {
         const valid = validTrack();
         const result = await sut.tracks.audioFeatures(valid.id);
 
@@ -37,7 +38,7 @@ describe("Integration: Tracks Endpoints", () => {
         expect(result.id).toBe(valid.id);
     });   
     
-    it("audioFeatures can return multiple items", async () => {
+    restrictedEndpointTest("audioFeatures can return multiple items", async () => {
         const valid = validTrack();
         const result = await sut.tracks.audioFeatures([valid.id, valid.id]);
 
@@ -46,7 +47,7 @@ describe("Integration: Tracks Endpoints", () => {
         expect(result[1].id).toBe(valid.id);
     });
 
-    it("audioAnalysis can return information", async () => {
+    restrictedEndpointTest("audioAnalysis can return information", async () => {
         const valid = validTrack();
         const result = await sut.tracks.audioAnalysis(valid.id);
 

@@ -8,7 +8,7 @@ export default class DefaultResponseValidator implements IValidateResponses {
                 throw new Error("Bad or expired token. This can happen if the user revoked a token or the access token has expired. You should re-authenticate the user.");
             case 403:
                 const body = await response.text();
-                throw new Error(`Bad OAuth request (wrong consumer key, bad nonce, expired timestamp...). Unfortunately, re-authenticating the user won't help here. Body: ${body}`);
+                throw new Error(`Forbidden (403): access denied. Check app endpoint access, user permissions and scopes. Body: ${body}`);
             case 429:
                 throw new Error("The app has exceeded its rate limits.");
             default:

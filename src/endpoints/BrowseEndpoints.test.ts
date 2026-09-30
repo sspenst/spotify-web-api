@@ -1,3 +1,4 @@
+import { restrictedEndpointTest } from "../test/SpotifyApiBuilder.js";
 import { beforeEach, describe, expect, it } from "vitest";
 import { buildIntegrationTestSdkInstance } from "../test/SpotifyApiBuilder";
 import { SpotifyApi } from "../SpotifyApi";
@@ -25,12 +26,20 @@ describe("Integration: Browse Categories Endpoints", () => {
         const result = await sut.browse.getCategory(valid.id);
 
         expect(fetchSpy.lastRequest().input).toBe(`https://api.spotify.com/v1/browse/categories/${valid.id}`);
-        expect(result).toStrictEqual(valid);
+        // Use the canonical category ID; labels and artwork are mutable catalog data.
+        expect(result).toMatchObject({ id: valid.id, href: valid.href });
+        expect(result.name).toEqual(expect.any(String));
+        expect(result.name.length).toBeGreaterThan(0);
+        expect(result.icons.length).toBeGreaterThan(0);
+        for (const icon of result.icons) {
+            expect(icon.url).toMatch(/^https:\/\//);
+            for (const size of [icon.height, icon.width]) {
+                if (size !== null) expect(size).toBeGreaterThan(0);
+            }
+        }
     });
 
-    it("getCategorysPlaylists returns playlists", async () => {
-        // Seems broken?
-
+    restrictedEndpointTest("getCategorysPlaylists returns playlists", async () => {
         const valid = validCategory();
         const result = await sut.browse.getPlaylistsForCategory(valid.id);
 
