@@ -1,10 +1,11 @@
 import type { AccessToken, ICachable } from "../types.js";
 import { Crypto } from "./Crypto.js";
+import TokenRefreshError from "./TokenRefreshError.js";
 
 export default class AccessTokenHelpers {
     public static async refreshCachedAccessToken(clientId: string, item: AccessToken) {
         const updated = await AccessTokenHelpers.refreshToken(clientId, item.refresh_token);
-        return AccessTokenHelpers.toCachable(updated);
+        return AccessTokenHelpers.toCachable({ ...updated, refresh_token: updated.refresh_token ?? item.refresh_token });
     }
 
     public static toCachable(item: AccessToken): ICachable & AccessToken {
@@ -34,7 +35,14 @@ export default class AccessTokenHelpers {
         const text = await result.text();
 
         if (!result.ok) {
-            throw new Error(`Failed to refresh token: ${result.statusText}, ${text}`);
+            let error: string | undefined;
+            try {
+                const body = JSON.parse(text);
+                if (typeof body?.error === "string") error = body.error;
+            } catch {
+                // Non-JSON failures still retain their HTTP status and message.
+            }
+            throw new TokenRefreshError(error, result.status, `Failed to refresh token: ${result.statusText}, ${text}`);
         }
 
         const json: AccessToken = JSON.parse(text);

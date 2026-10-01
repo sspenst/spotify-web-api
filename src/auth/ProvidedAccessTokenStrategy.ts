@@ -1,6 +1,7 @@
 import { AccessToken, SdkConfiguration } from "../types.js";
 import AccessTokenHelpers from "./AccessTokenHelpers.js";
-import IAuthStrategy from "./IAuthStrategy.js";
+import IAuthStrategy, { emptyAccessToken } from "./IAuthStrategy.js";
+import TokenRefreshError from "./TokenRefreshError.js";
 
 /**
  * This strategy is used when you already have an access token and want to use it.
@@ -36,25 +37,27 @@ export default class ProvidedAccessTokenStrategy implements IAuthStrategy {
     }
 
     public async getOrCreateAccessToken(): Promise<AccessToken> {
+        if (this.accessToken === emptyAccessToken) return emptyAccessToken;
         if (this.accessToken.expires && this.accessToken.expires <= Date.now()) {
-            const refreshed = await this.refreshTokenAction(this.clientId, this.accessToken);
-            this.accessToken = refreshed;
+            try {
+                const refreshed = await this.refreshTokenAction(this.clientId, this.accessToken);
+                this.accessToken = { ...refreshed, refresh_token: refreshed.refresh_token ?? this.accessToken.refresh_token };
+            } catch (error) {
+                if (error instanceof TokenRefreshError && error.error === "invalid_grant") {
+                    this.removeAccessToken();
+                }
+                throw error;
+            }
         }
 
         return this.accessToken;
     }
 
     public async getAccessToken(): Promise<AccessToken | null> {
-        return this.accessToken;
+        return this.accessToken === emptyAccessToken ? null : this.accessToken;
     }
 
     public removeAccessToken(): void {
-        this.accessToken = {
-            access_token: "",
-            token_type: "",
-            expires_in: 0,
-            refresh_token: "",
-            expires: 0
-        };
+        this.accessToken = emptyAccessToken;
     }
 }

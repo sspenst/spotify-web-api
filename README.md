@@ -67,6 +67,22 @@ console.table(items.artists.items.map((item) => ({
 
 We do auto-token refresh when expired and a refresh token is available.
 
+Refresh responses may omit a refresh token; the SDK retains the existing one
+until Spotify returns a replacement. Spotify user refresh tokens expire after
+six months and can also be revoked. On a refresh `invalid_grant`, the SDK clears
+the stored access and refresh credentials instead of retrying that token.
+Browser PKCE starts authorization again on the next foreground authentication
+or API request (including the request that discovered the failure). Background
+cache renewal clears credentials without navigating.
+
+With `SpotifyApi.withAccessToken()`, refresh failure rejects with the exported
+`TokenRefreshError`. If `error.error === "invalid_grant"`, obtain new credentials
+through your application's sign-in flow and create a new SDK instance with them.
+`getAccessToken()` returns `null` after invalidation; subsequent `authenticate()`
+calls report `authenticated: false` without retrying the discarded token.
+Transient refresh failures retain credentials for a later attempt; once the
+access token is expired, the request rejects rather than using it.
+
 ### Picking an Authentication Method
 
 For browser applications, use Authorization Code Flow with PKCE. It handles the redirect to Spotify and back, and lets you make requests with the user's access token.

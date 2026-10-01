@@ -1,6 +1,7 @@
 import type { ICachable, SdkConfiguration, AccessToken, ICachingStrategy } from "../types.js";
 import AccessTokenHelpers from "./AccessTokenHelpers.js";
 import IAuthStrategy, { emptyAccessToken } from "./IAuthStrategy.js";
+import TokenRefreshError from "./TokenRefreshError.js";
 
 interface CachedVerifier extends ICachable {
     verifier: string;
@@ -31,7 +32,15 @@ export default class AuthorizationCodeWithPKCEStrategy implements IAuthStrategy 
                 const token = await this.redirectOrVerifyToken();
                 return AccessTokenHelpers.toCachable(token);
             }, async (expiring) => {
-                return AccessTokenHelpers.refreshCachedAccessToken(this.clientId, expiring);
+                try {
+                    return await AccessTokenHelpers.refreshCachedAccessToken(this.clientId, expiring);
+                } catch (error) {
+                    if (error instanceof TokenRefreshError && error.error === "invalid_grant") {
+                        this.removeAccessToken();
+                        return emptyAccessToken;
+                    }
+                    throw error;
+                }
             },
         );
 
@@ -57,7 +66,7 @@ export default class AuthorizationCodeWithPKCEStrategy implements IAuthStrategy 
             return token;
         }
 
-        this.redirectToSpotify();
+        await this.redirectToSpotify();
         return emptyAccessToken; // Redirected away at this point, just make TypeScript happy :)         
     }
 
@@ -131,4 +140,3 @@ export default class AuthorizationCodeWithPKCEStrategy implements IAuthStrategy 
     }
 
 }
-

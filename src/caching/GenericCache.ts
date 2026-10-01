@@ -99,13 +99,17 @@ export default class GenericCache implements ICachingStrategy {
 
     private async autoRenewRenewableItems() {
         this.updateFunctions.forEach(async (updateFunction, key) => {
-            const cachedItem = await this.get(key);
-            if (!cachedItem) {
-                return;
-            }
+            try {
+                const cachedItem = await this.get(key);
+                if (!cachedItem) {
+                    return;
+                }
 
-            if (updateFunction && this.itemDueToExpire(cachedItem)) {
-                await this.tryUpdateItem(key, cachedItem, updateFunction);
+                if (updateFunction && this.itemDueToExpire(cachedItem)) {
+                    await this.tryUpdateItem(key, cachedItem, updateFunction);
+                }
+            } catch (error) {
+                console.error(error);
             }
         });
     }
@@ -113,10 +117,15 @@ export default class GenericCache implements ICachingStrategy {
     private async tryUpdateItem(key: string, cachedItem: ICachable, updateFunction: (item: ICachable) => Promise<ICachable>) {
         try {
             const updated = await updateFunction(cachedItem);
-            if (updated) {
+            if (updated && !isEmptyAccessToken(updated)) {
                 this.setCacheItem(key, updated);
             }
         } catch (e) {
+            // Keep expired credentials available for a later refresh attempt.
+            // Returning an expired item or removing it would lose that opportunity.
+            if (cachedItem.expires && cachedItem.expires <= Date.now()) {
+                throw e;
+            }
             console.error(e);
         }
     }

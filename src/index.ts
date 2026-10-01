@@ -3,6 +3,7 @@ import AuthorizationCodeWithPKCEStrategy from "./auth/AuthorizationCodeWithPKCES
 import ClientCredentialsStrategy from "./auth/ClientCredentialsStrategy.js";
 import IAuthStrategy from "./auth/IAuthStrategy.js";
 import ProvidedAccessTokenStrategy from "./auth/ProvidedAccessTokenStrategy.js";
+import TokenRefreshError from "./auth/TokenRefreshError.js";
 import InMemoryCachingStrategy from "./caching/InMemoryCachingStrategy.js";
 import LocalStorageCachingStrategy from "./caching/LocalStorageCachingStrategy.js";
 import { ICacheStore } from "./caching/ICacheStore.js";
@@ -21,6 +22,7 @@ export {
     AuthorizationCodeWithPKCEStrategy,
     ClientCredentialsStrategy,
     ProvidedAccessTokenStrategy,
+    TokenRefreshError,
     InMemoryCachingStrategy,
     LocalStorageCachingStrategy,
     GenericCache,
