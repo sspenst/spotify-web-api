@@ -1,3 +1,10 @@
+## [3.0.1](https://github.com/sspenst/spotify-web-api/compare/v3.0.0...v3.0.1) (2026-10-01)
+
+
+### Bug Fixes
+
+* **auth:** preserve refresh tokens and handle invalid grants ([ddfba3c](https://github.com/sspenst/spotify-web-api/commit/ddfba3cb915d2cd6c284b8100821111741f00218)), closes [#56](https://github.com/sspenst/spotify-web-api/issues/56) [#25](https://github.com/sspenst/spotify-web-api/issues/25)
+
 # [3.0.0](https://github.com/sspenst/spotify-web-api/compare/v2.0.0...v3.0.0) (2026-09-30)
 
 
